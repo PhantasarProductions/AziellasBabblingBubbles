@@ -1,0 +1,14 @@
+#use LinkedList
+
+class TFish
+	int x
+	int y
+	int speed
+	int scale
+	var image
+end
+
+table FishImages
+var Fishes
+Fishes = LinkedList()
+
