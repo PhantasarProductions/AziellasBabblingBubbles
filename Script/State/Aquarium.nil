@@ -2,6 +2,10 @@
 #use "Libs/strings"
 #use "Libs/tables"
 
+#macro min_weed 10
+#macro max_weed 100
+#macro sin_weed .0011
+
 bool fishdebug=true
 
 
@@ -39,7 +43,6 @@ void NewFish()
 		case 1
 			fish.x = ScreenWidth + 200
 			fish.speed = math.random(1,10)/4
-			
 		case 2
 			fish.x = - 200
 			fish.speed = -math.random(1,10)/4
@@ -48,13 +51,32 @@ void NewFish()
 	fish.image = FishImages[math.random(1,#FishImages)]
 end
 
+
+
+class TWeed
+	int x
+	int y
+	var image
+	int sindivider
+	static int sincount = 0
+end
+table WeedImages
+var Weed
+Weed = LinkedList()
+
+
+
+
+
 global void DrawAquarium()
+	// Water
 	Color(0,math.floor(math.abs((math.sin(wblue)*180))),255)
 	wblue=wblue+.001
 	if wblue>1000000 then wblue = wblue * (-1) end
 	Rect(0,0,ScreenWidth,ScreenHeight)
 	int count = 0
 	Color(255,255,255)
+	// Fish
 	for Fish,FishLink in Fishes.Each
 		count = count + 1
 		if fishdebug
@@ -69,21 +91,52 @@ global void DrawAquarium()
 	if math.random(0,count*20)==0
 		NewFish()
 	end
+	// Weed
+	TWeed.sincount = TWeed.sincount + sin_weed
+	if (TWeed.sincount>100000) then 
+		TWeed.sincount=TWeed.sincount*(-1) 
+	end
+	for W in Weed.Each
+		W.image.Draw(math.floor(W.x+(math.sin(TWeed.sincount/W.sindivider)*4)),W.y+math.floor(math.cos((TWeed.sincount*TWeed.sincount)*2)))
+	end
 end
 
 global void BUB_Load()
 	CSay("Init Aquarium")
 	Fishes = LinkedList()
 	// Load Fish Images
-	CSay("Scanning for fishes")
+	CSay("Scanning for fishes and weed")
 	for k,_ in spairs(JCR_EntryList(true))
 		// CSay(type(k).."  "..k)
 		if prefixed(k,"GFX/AQUARIUM/FISH/") and suffixed(k,".PNG") then
 			CSay("Loading Fish Image: "..k)
 			#pure
-			FishImages[#FishImages+1]=LoadImage(k)
+			FishImages[#FishImages+1] = LoadImage(k)
 			#endpure
 		end
-		//CSay("Next")
+		if prefixed(k,"GFX/AQUARIUM/SEAWEED/") and suffixed(k,".PNG") then
+			CSay("Loading Weed Image: "..k)
+			#pure
+			WeedImages[#WeedImages+1] = LoadImage(k)
+			#endpure
+		end
+		// CSay("Next")
 	end
+	// Weed config
+	CSay("Configuring sea weed")
+	int wc=0
+	repeat		
+		var weed
+		weed = TWeed.NEW()
+		weed.image = WeedImages[math.random(1,#WeedImages)]
+		weed.x = math.random(0,Screen.Width)
+		CSay("?")
+		weed.y = Screen.Height-(weed.image.Height-3)
+		CSay("??")
+		weed.sindivider = math.random(1,4)
+		Weed.AddLast(weed)
+		wc = wc + 1
+		CSay(string.format("Created weed #%d: (%d,%d), d%d",wc,weed.x,weed.y,weed.sindivider))
+	until (wc>=min_weed and math.random(1,max_weed-wc)<=1) or wc>max_weed
+	CSay(wc.." weed instances created")
 end
