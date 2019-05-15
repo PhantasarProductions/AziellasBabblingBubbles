@@ -1,4 +1,7 @@
+#use 'Script/Use/Aquarium_link'
+
 global void BUB_Draw()
+	DrawAquarium()
 end
 
 

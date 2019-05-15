@@ -2,25 +2,73 @@
 #use "Libs/strings"
 #use "Libs/tables"
 
+bool fishdebug=true
+
+
 class TFish
-	int x
+	int _tx
 	int y
 	int speed
 	int scale
 	var image
+	
+	get int x
+		return math.floor(self._tx)
+	end
+	
+	set int x
+		self._tx=value
+	end
+	
+	void move()
+		self._tx=self._tx-self.speed
+	end
 end
 
 table FishImages
 var Fishes
 
+int wblue=0
+
+void NewFish()
+	var fish
+	fish=TFish.NEW()
+	Fishes.AddLast(fish)
+	// Is 1 till 1 for now, later I will add 1,2 for swimming the opposite direction
+	switch math.random(1,1)
+		case 1
+			fish.x = ScreenWidth + 200
+			fish.speed = math.random(1,10)/4
+			
+		case 2
+			fish.x = - 200
+			fish.speed = -math.random(1,10)/4
+	end
+	fish.y=math.random(10,ScreenHeight-100)
+	fish.image = FishImages[math.random(1,#FishImages)]
+end
 
 global void DrawAquarium()
+	Color(0,math.floor(math.abs((math.sin(wblue)*180))),255)
+	wblue=wblue+.001
+	if wblue>1000000 then wblue = wblue * (-1) end
 	Rect(0,0,ScreenWidth,ScreenHeight)
-	int count
-	for Fish in Fishes.Each
+	int count = 0
+	Color(255,255,255)
+	for Fish,FishLink in Fishes.Each
 		count = count + 1
+		if fishdebug
+			if Fish.x<-290 then Color(255,0,0) end
+			Rect(0+(count*5),5,3,3)
+			Color(255,255,255)
+		end
+		Fish.image.Draw(Fish.x,Fish.y)
+		Fish.move()
+		if FishLink and (Fish.x<-300 or Fish.x>ScreenWidth+1000) then FishLink.UnLink() end
 	end
-	
+	if math.random(0,count*20)==0
+		NewFish()
+	end
 end
 
 global void BUB_Load()
