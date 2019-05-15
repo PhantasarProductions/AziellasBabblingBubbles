@@ -1,4 +1,6 @@
-#use LinkedList
+#use "Libs/LinkedList"
+#use "Libs/strings"
+#use "Libs/tables"
 
 class TFish
 	int x
@@ -10,5 +12,30 @@ end
 
 table FishImages
 var Fishes
-Fishes = LinkedList()
 
+
+global void DrawAquarium()
+	Rect(0,0,ScreenWidth,ScreenHeight)
+	int count
+	for Fish in Fishes.Each
+		count = count + 1
+	end
+	
+end
+
+global void BUB_Load()
+	CSay("Init Aquarium")
+	Fishes = LinkedList()
+	// Load Fish Images
+	CSay("Scanning for fishes")
+	for k,_ in spairs(JCR_EntryList(true))
+		// CSay(type(k).."  "..k)
+		if prefixed(k,"GFX/AQUARIUM/FISH/") and suffixed(k,".PNG") then
+			CSay("Loading Fish Image: "..k)
+			#pure
+			FishImages[#FishImages+1]=LoadImage(k)
+			#endpure
+		end
+		//CSay("Next")
+	end
+end

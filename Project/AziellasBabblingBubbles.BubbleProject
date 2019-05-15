@@ -1,12 +1,14 @@
 [rem]
 Generated file!
 
-Generated: 5/14/2019 8:55:10 PM
+Generated: 5/15/2019 10:06:18 AM
 
 [vars]
 AUTHOR[./SRC/ALLEN R. WALDEN]=Allen R. Walden
 AUTHOR[./SRC/ANGIE DURBIN]=Angie Durbin
+AUTHOR[./SRC/FANTASYSTOCK]=fantasystock
 AUTHOR[./SRC/FLAMINGTEXT.COM]=Jeroen P. Broks
+AUTHOR[./SRC/GR-SITES]=GR-Sites
 AUTHOR[./SRC/KELLY]=Kelly
 AUTHOR[./SRC/LAUREN THOMPSON]=Lauren Tompson
 AUTHOR[./SRC/LINVALA KEMELLON]=Linvala Kemellon
@@ -26,7 +28,9 @@ JCRCOMPRESS=lzma
 JCRMERGE=YES
 NOTES[./SRC/ALLEN R. WALDEN]=Downloaded from DaFont said to be 100% free
 NOTES[./SRC/ANGIE DURBIN]=Donwloaded from DaFont and said to be 100% free
+NOTES[./SRC/FANTASYSTOCK]=Please read the terms of usage before extracting and using! >> https://fantasystock.deviantart.com/journal/7569297/
 NOTES[./SRC/FLAMINGTEXT.COM]=Created with CoolText
+NOTES[./SRC/GR-SITES]=www.grsites.com
 NOTES[./SRC/KELLY]=Public Domain
 NOTES[./SRC/LAUREN THOMPSON]=DaFont 100% Free
 NOTES[./SRC/LINVALA KEMELLON]=This picture was created by order of Jeroen P. Broks and is therefore not allowed to be extracted from this game!
@@ -56,6 +60,8 @@ WEBSITE=---
 ./src/Odrareg Pepper
 ./src/Tricky Assets
 ./src/William Boyd
+./src/fantasystock
+./src/GR-Sites
 
 [List:IGNOREDIRS]
 
