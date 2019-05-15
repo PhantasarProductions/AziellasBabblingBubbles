@@ -1,0 +1,45 @@
+// Aziella is part of the Phantasar Universe
+// Property of Jeroen Broks
+//
+// Therefore it may only exist with an unmodified version of the game,
+// Or Jeroen's own git repositories.
+//
+// If all references to Aziella and the Phantasar universe have been
+// removed, the entire game, including this script will automatically
+// gain the GPL3 license.
+
+
+var Image
+int x
+int y
+int w
+int h
+bool wanted = false
+
+global void BUB_Load()
+	Image = LoadImage("GFX/General/Aziella.png")
+	CSay("Aziella properly loaded")
+	w = Image.Width
+	h = Image.Height
+	x = -w
+	h = Screen.Height-h
+end
+
+global void Draw()
+	if x>-w
+		Image.Draw(x,y)
+	end
+	if wanted and x<0
+		x = x + 1
+	elseif (not wanted) and x>=-w
+		x = x - 1
+	end
+end
+
+global void Call() 
+	wanted=true
+end
+
+global void GoAway()
+	wanted=false
+end

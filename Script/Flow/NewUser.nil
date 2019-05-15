@@ -1,0 +1,16 @@
+#use 'Script/Use/Aquarium_link'
+#use 'Script/Use/Mascotte'
+
+global void BUB_Load()
+	CallMascot()
+end
+
+global void BUB_Draw()
+	DrawAquarium()
+	DrawMascot()
+end
+
+
+global void BUB_Update()
+end
+

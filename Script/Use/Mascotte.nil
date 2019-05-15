@@ -1,0 +1,15 @@
+if not StateExists("MASCOT")
+	LoadState("MASCOT","Script/State/Aziella.nil")
+end
+
+global void CallMascot()
+	LuaDoString("MASCOT","Call()")
+end
+
+global void DismissMascot()
+	LuaDoString("MASCOT","GoAway()")
+end
+
+global void DrawMascot()
+	LuaDoString("MASCOT","Draw()")
+end

@@ -18,14 +18,15 @@ global void Bubble_Init()
 
 
 	// Load user
-	// TODO: actual load code!
-	
+	// TODO: actual load code!	
 	if (SuperGlobal.User=="")
 		// If no user present go to the Load User flow!
-		LoadFlow("NEWUSER","Script/Flow/NewUser.nl")
+		LoadFlow("NEWUSER","Script/Flow/NewUser.nil")
+		GoToFlow("NEWUSER")		
 	else
 		// Go to the main menu
 		GoToFlow("MAINMENU")
+		
 	end
 	
 	// Start this crap!
