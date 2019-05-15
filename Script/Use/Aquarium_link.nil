@@ -1,0 +1,6 @@
+global void DrawAquarium()
+	// NIL and Lua have the same effect here, but the big difference is 
+	// that Lua does not need to be translated,so that is in this case 
+	// faster! ;)
+	LuaDoString("AQUA","DrawAquarium()")
+end
