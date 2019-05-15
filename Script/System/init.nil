@@ -1,8 +1,33 @@
 global void Bubble_Init()
-	CSay("Let's start")
+	// main start
+	CSay("Let's start")	
 	CSay(string.format("Screen Size %dx%d",ScreenWidth,ScreenHeight))
+	// Set up superglobal
+	CSay("Init SuperGlobal")
+	SuperGlobal["#strict"]='true';
+	SuperGlobal["#string"]='User';
+	SuperGlobal.User="";
+	
+	
+	
+	// Load Aquarium
 	LoadState("AQUA","Script/State/Aquarium.nil")
+	
+	// Load Main Menu
 	LoadFlow("MAINMENU","Script/Flow/MainMenu.nil")
-	GoToFlow("MAINMENU")
+
+
+	// Load user
+	// TODO: actual load code!
+	
+	if (SuperGlobal.User=="")
+		// If no user present go to the Load User flow!
+		LoadFlow("NEWUSER","Script/Flow/NewUser.nl")
+	else
+		// Go to the main menu
+		GoToFlow("MAINMENU")
+	end
+	
+	// Start this crap!
 	StartFlow()
 end
