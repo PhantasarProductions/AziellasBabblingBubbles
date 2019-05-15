@@ -157,9 +157,7 @@ global void BUB_Load()
 		weed = TWeed.NEW()
 		weed.image = WeedImages[math.random(1,#WeedImages)]
 		weed.x = math.random(0,Screen.Width)
-		CSay("?")
 		weed.y = Screen.Height-(weed.image.Height-3)
-		CSay("??")
 		weed.sindivider = math.random(1,4)
 		Weed.AddLast(weed)
 		wc = wc + 1
