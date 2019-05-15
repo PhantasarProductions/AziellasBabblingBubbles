@@ -1,0 +1,5 @@
+global void Bubble_Init()
+	CSay("Let's start")
+	CSay(string.format("Screen Size %dx%d",ScreenWidth,ScreenHeight))
+	LoadState("AQUA","Script/State/Aquarium.nil")
+end

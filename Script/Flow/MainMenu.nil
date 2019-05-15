@@ -1,0 +1,6 @@
+global void BUB_Draw()
+end
+
+
+global void BUB_Update()
+end
