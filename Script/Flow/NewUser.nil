@@ -24,17 +24,34 @@
 // Version: 19.05.15
 // End License Information
 
-
 #use 'Script/Use/Aquarium_link'
 #use 'Script/Use/Mascotte'
+
+int Stage = 1
+table Stages
+
+if not StateExists("MASCOT")
+	LoadState("MASCOT","Script/State/Aziella.nil")
+end
+
+Stages[1] = {}
+Stages[1]["Draw"] = void()
+	Color(25,18,18)
+	Rect(400,50,Screen.Width-425,Screen.Height-100)
+end
+
 
 global void BUB_Load()
 	CallMascot()
 end
 
 global void BUB_Draw()
+	var CS
+	CS = Stages[Stage]
 	DrawAquarium()
 	DrawMascot()
+	if CS.Draw then CS.Draw() end
+	
 end
 
 

@@ -25,10 +25,6 @@
 // End License Information
 
 
-if not StateExists("MASCOT")
-	LoadState("MASCOT","Script/State/Aziella.nil")
-end
-
 global void CallMascot()
 	LuaDoString("MASCOT","Call()")
 end
