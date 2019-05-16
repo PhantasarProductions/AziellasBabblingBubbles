@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.05.15
+// Version: 19.05.16
 // End License Information
+
 
 
 #use "Libs/LinkedList"
@@ -165,5 +166,6 @@ global void BUB_Load()
 	until (wc>=min_weed and math.random(1,max_weed-wc)<=1) or wc>max_weed
 	CSay(wc.." weed instances created")
 end
+
 
 

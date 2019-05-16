@@ -21,18 +21,47 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.05.15
+// Version: 19.05.16
 // End License Information
 
 
+
 #use 'Script/Use/Aquarium_link'
+#use 'Script/Use/Mascotte'
+
+#macro MENU_LOGOSIN_SPEED 0.1
+
+var logo
+int logox
+int logoy
+int logow
+int logoh
+int logomx
+int logomy
+int logosin
+
+global void BUB_Load()
+	logo = LoadImage("GFX/General/Logo.png")
+	logo.HotTopCenter()
+	logox = math.floor(Screen.Width/2)
+	logow = logo.Width
+	logoh = logo.Height
+	logomx = logow/2
+	logomy = logoh/2
+end
 
 global void BUB_Draw()
 	DrawAquarium()
+	logoy = 100 + math.floor(math.sin(logosin)*10);
+	logosin = logosin + MENU_LOGOSIN_SPEED // ?
+	if logosin>10000 then logosin = logosin * (-1) end
+	logo.Draw(logox-logomx,logoy-logomy)
+	DrawMascot()
 end
 
 
 global void BUB_Update()
 end
+
 
 

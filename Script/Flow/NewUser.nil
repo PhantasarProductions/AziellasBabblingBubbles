@@ -21,9 +21,11 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.05.15
+// Version: 19.05.16
 // End License Information
 
+
+#use 'libs/strings'
 #use 'Script/Use/Aquarium_link'
 #use 'Script/Use/Mascotte'
 
@@ -32,6 +34,8 @@ table Stages
 var SpeakFont
 var TypeFont
 SpeakFont = GetFont("SPEAK")
+TypeFont = GetFont("TYPE")
+string name=""
 
 if not StateExists("MASCOT")
 	LoadState("MASCOT","Script/State/Aziella.nil")
@@ -53,8 +57,31 @@ Stages[1]["Draw"] = void()
 		tt[i]["Draw"](405,40+(i*25))
 		//CSay(i..">"..tt[i]["Width"])
 	end
+	Color(0,18,25)
+	Rect(410,Screen.Height-150,Screen.Width-445,30)
+	Color(0,180,255)
+	TypeFont.Draw(name.."#",412,Screen.Height-148)
+	// Color(0,0,0) TypeFont.Draw(TypeFont.TextWidth(name.."#").." size",0,0) // Debug
 end
 
+Stages[2] = {
+	["TextString"] = { "Hello {name};","","Some evil wizard is holding","me prison under the sea","","You can only release me","if you pop the right",'"Babbling Bubbles"',"as the wizard","called them","","Will you help me?" },
+	["Text"] = {},
+	["Draw"] = void()
+		table ts
+		table tt
+		ts = Stages[2]["TextString"]
+		tt = Stages[2]["Text"]
+		Color(25,18,18)
+		Rect(400,50,Screen.Width-425,Screen.Height-100)
+		Color(255,180,180)
+		for i=1,#ts
+			tt[i]=tt[i] or SpeakFont.Text(replace(ts[i],"{name}",name))
+			tt[i]["Draw"](405,40+(i*25))
+			//CSay(i..">"..tt[i]["Width"])
+		end
+	end
+}
 
 global void BUB_Load()
 	CallMascot()
@@ -73,5 +100,28 @@ end
 global void BUB_Update()
 end
 
+global void BUB_KeyPressed(string kname,int kcode)
+	if Stage==1
+		switch kname
+			case "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"
+				string ch
+				ch=kname
+				if (#name>0 and mid(name,#name,1)!=" ") then ch=ch:lower() end
+				if (TypeFont.TextWidth(name.."#")<Screen.Width-560) then name = name .. ch end
+			case "Space"
+				if (#name>0 and mid(name,#name,1)!=" " and TypeFont.TextWidth(name.."#")<Screen.Width-560) then name = name .. " " end
+			case "Back"
+				if (#name>0) then  name = left(name,#name-1) end
+			case "Enter"
+				if #name>0
+					SuperGlobal.UserName=name
+					Stage = 2
+				end
+		end
+	else
+		GoToFlow("MAINMENU")
+		DismissMascot()
+	end
+end
 
 
