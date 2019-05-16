@@ -29,15 +29,30 @@
 
 int Stage = 1
 table Stages
+var SpeakFont
+var TypeFont
+SpeakFont = GetFont("SPEAK")
 
 if not StateExists("MASCOT")
 	LoadState("MASCOT","Script/State/Aziella.nil")
 end
 
 Stages[1] = {}
+Stages[1]["TextString"] = {"Hello there","My name is Aziella Azbanella","Pyerra Fradique, daughter of","the house of Gandron!","What's your name?"}
+Stages[1]["Text"] = {}
 Stages[1]["Draw"] = void()
+	table ts
+	table tt
+	ts = Stages[1]["TextString"]
+	tt = Stages[1]["Text"]
 	Color(25,18,18)
 	Rect(400,50,Screen.Width-425,Screen.Height-100)
+	Color(255,180,180)
+	for i=1,#ts
+		tt[i]=tt[i] or SpeakFont.Text(ts[i])
+		tt[i]["Draw"](405,40+(i*25))
+		//CSay(i..">"..tt[i]["Width"])
+	end
 end
 
 

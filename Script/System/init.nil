@@ -42,6 +42,10 @@ global void Bubble_Init()
 	
 	// Load Main Menu
 	LoadFlow("MAINMENU","Script/Flow/MainMenu.nil")
+	
+	// Load Fonts
+	LoadImageFont("Fonts/angelina.25.jfbf","SPEAK")
+
 
 
 	// Load user
