@@ -21,13 +21,15 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.05.16
+// Version: 19.05.17
 // End License Information
 
 
 
+#use 'libs/strings'
 #use 'Script/Use/Aquarium_link'
 #use 'Script/Use/Mascotte'
+#use 'Script/Use/Music'
 
 #macro MENU_LOGOSIN_SPEED 0.1
 
@@ -41,6 +43,8 @@ int logomy
 int logosin
 
 global void BUB_Load()
+	CSay("Init main menu")
+	CSay("Load logo")
 	logo = LoadImage("GFX/General/Logo.png")
 	logo.HotTopCenter()
 	logox = math.floor(Screen.Width/2)
@@ -48,6 +52,8 @@ global void BUB_Load()
 	logoh = logo.Height
 	logomx = logow/2
 	logomy = logoh/2
+	CSayF("Load Music '%s'", _TitleMusic_)
+	Music.Start( _TitleMusic_ )
 end
 
 global void BUB_Draw()
@@ -62,6 +68,7 @@ end
 
 global void BUB_Update()
 end
+
 
 
 
