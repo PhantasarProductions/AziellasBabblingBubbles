@@ -1,0 +1,54 @@
+// License Information:
+// Aziella's Babbling Bubbles
+// Music Header Module
+// 
+// 
+// 
+// (c) Jeroen P. Broks, 
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+// Please note that some references to data like pictures or audio, do not automatically
+// fall under this licenses. Mostly this is noted in the respective files.
+// 
+// Version: 19.05.17
+// End License Information
+
+#localuse 'libs/strings'
+#macro _TitleMusic_ "Music/Title/Odyssey.wav"
+
+class musicbubbles
+	private var GotMusic()
+		CSay("Checking for existance music module!")
+		assert(JCR_EntryExists,"Error in JCR module! JCR_Has not found! Properly loaded?")
+		return JCR_EntryExists(_TitleMusic_)
+	end
+
+	void Start(string file)
+		CSayF("Request to load '%s' received",file)
+		if not self.GotMusic() then 
+			CSay("Not present! Request ignored")
+			return 
+		end
+		CSay("Present")
+		if not StateExists("MUSIC") then
+			CWriteLine("Compiling music engine",180,255,0)
+			LoadState("MUSIC","Script/State/Music.nil")
+		end
+		CSay("Contacting music engine")
+		LuaDoString("MUSIC",string.format('StartMusic("%s")',file:upper()))
+	end
+end
+
+return musicbubbles.NEW()
+

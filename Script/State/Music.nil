@@ -1,0 +1,54 @@
+// License Information:
+// Music State
+// Music State
+// 
+// 
+// 
+// (c) Jeroen P. Broks, 
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+// Please note that some references to data like pictures or audio, do not automatically
+// fall under this licenses. Mostly this is noted in the respective files.
+// 
+// Version: 19.05.17
+// End License Information
+
+// This script will handle the music
+// That is, *if* the music files can be found
+// If not, this script won't be loaded at all.
+
+#use "libs/strings"
+
+string playingtrack
+var musicr
+var musicinstance
+
+global void StartMusic(string file)
+	file = file:upper()
+	if playingtrack==file then 
+		CSayF("Request to play %s ignored, as that track is already playing",file)
+		return 
+	end
+	CSayF("Loading %s",file)
+	var r
+	r = LoadAudio(file)
+	if musicinstance 
+		CSay("Stopping old instance!")
+		musicinstance.Stop()
+	end
+	musicr=r
+	CSayF("Playing %s",file)
+	musicinstance = musicr.Loop()
+end
+
