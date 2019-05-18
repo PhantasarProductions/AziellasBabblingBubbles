@@ -30,6 +30,7 @@
 #use 'Script/Use/Aquarium_link'
 #use 'Script/Use/Mascotte'
 #use 'Script/Use/Music'
+#use 'Script/Use/ShowMouse'
 
 #macro MENU_LOGOSIN_SPEED 0.1
 
@@ -63,6 +64,7 @@ global void BUB_Draw()
 	if logosin>10000 then logosin = logosin * (-1) end
 	logo.Draw(logox-logomx,logoy-logomy)
 	DrawMascot()
+	ShowMouse()
 end
 
 

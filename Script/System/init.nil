@@ -44,6 +44,9 @@ global void Bubble_Init()
 	// Load Main Menu
 	LoadFlow("MAINMENU","Script/Flow/MainMenu.nil")
 	
+	// Mouse Pointer
+	LoadImage("GFX/UI/MousePointer.png","MOUSEPOINTER")
+	
 	// Load Fonts
 	LoadImageFont("Fonts/angelina.25.jfbf","SPEAK")
 	LoadImageFont("Fonts/final.25.jfbf","TYPE")
