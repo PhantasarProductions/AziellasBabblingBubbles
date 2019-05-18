@@ -1,4 +1,4 @@
-![](https://i.imgur.com/wGD0IIe.png)
+![](https://i.imgur.com/xPGyOI5.png)
 
 # WIP!
 
