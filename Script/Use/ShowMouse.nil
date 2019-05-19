@@ -1,0 +1,6 @@
+var MPoint
+MPoint = TImage.Obtain("MOUSEPOINTER")
+void ShowMouse()
+	if Mouse.MouseInside then MPoint.Draw(Mouse.X,Mouse.Y,0) end
+end
+return ShowMouse
