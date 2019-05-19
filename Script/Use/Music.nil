@@ -35,7 +35,7 @@ class musicbubbles
 	end
 
 	void Start(string file)
-		CSayF("Request to load '%s' received",file)
+		CSayF("Request to load '%s' received",(file or "<< FILE:NIL >>"))
 		if not self.GotMusic() then 
 			CSay("Not present! Request ignored")
 			return 

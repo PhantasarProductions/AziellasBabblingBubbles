@@ -36,6 +36,10 @@ global void Bubble_Init()
 	SuperGlobal["#string"]='User';
 	SuperGlobal.User="";
 	
+	// Savegame configuration
+	CSay("Init savegame data")
+	CSay("Directory: "..BubSave.WorkDir)
+	
 	
 	
 	// Load Aquarium
