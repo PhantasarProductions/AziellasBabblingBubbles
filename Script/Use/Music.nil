@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.05.17
+// Version: 19.05.20
 // End License Information
+
 
 #localuse 'libs/strings'
 #macro _TitleMusic_ "Music/Title/Odyssey.wav"
@@ -51,4 +52,5 @@ class musicbubbles
 end
 
 return musicbubbles.NEW()
+
 
