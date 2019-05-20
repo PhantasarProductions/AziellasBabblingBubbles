@@ -24,16 +24,60 @@
 // Version: 19.05.20
 // End License Information
 
-
-
-
 #use 'libs/strings'
+#use 'libs/linkedlist'
+#use 'Script/Use/Debug'
 #use 'Script/Use/Aquarium_link'
 #use 'Script/Use/Mascotte'
 #use 'Script/Use/Music'
 #use 'Script/Use/ShowMouse'
 
 #macro MENU_LOGOSIN_SPEED 0.1
+
+
+var TypeFont
+TypeFont = GetFont("TYPE")
+
+class MenuItem
+	var action
+	string Caption
+	var TextCaption
+	int y
+	static int nexty
+	static var List
+	static var Button
+	
+	void CONSTRUCTOR(string caption,action)
+		CSay("Creating Main Menu Item: "..caption)
+		// first time init!
+		if self.nexty==0 
+			CSay("Configuring y position!")
+			self.nexty=150
+		end
+		CSay("List!")
+		self.List = self.List or TLinkedList.NEW()
+		CSay("Button")
+		self.Button = self.Button or LoadImage("GFX/UI/LongButton.png")
+		
+		// configure item
+		CSay("Configuring item")
+		self.nexty = self.nexty + 55
+		self.y = self.nexty
+		self.Caption = caption
+		self.action = action
+		
+		CSay("Generating caption graphic")
+		self.TextCaption = TypeFont.Text(caption)
+		
+		// Add to list
+		CSay("Adding to list")
+		self.List.AddLast(self)
+		
+		// Final note
+		CSay("Created Main Menu Item: "..caption)
+	end
+end
+
 
 var logo
 int logox
@@ -43,6 +87,40 @@ int logoh
 int logomx
 int logomy
 int logosin
+string CurrentName = ""
+var TextName
+
+void CheckTextName()
+	if SuperGlobal.UserName!=CurrentName
+		TextName = TypeFont.Text(SuperGlobal.UserName)
+		CurrentName=SuperGlobal.UserName
+	end
+	Color(0,18,25)
+	for x=-1,1 
+		for y=-1,1
+			TextName.Draw(5+x,5+y)
+		end
+	end
+	Color(0,180,255)
+	TextName.Draw(5,5)
+	Color(255,255,255)
+end
+
+
+void StartGame()
+end
+
+void GoConfig()
+end
+
+void GoCredits()
+end
+
+void ChangeUser()
+end
+
+void GoQuit()
+end
 
 global void BUB_Load()
 	CSay("Init main menu")
@@ -56,14 +134,26 @@ global void BUB_Load()
 	logomy = logoh/2
 	CSayF("Load Music '%s'", _TitleMusic_)
 	Music.Start( _TitleMusic_ )
+	MenuItem.NEW("Play the game",StartGame)
+	MenuItem.NEW("Configuration",GoConfig)
+	MenuItem.NEW("Credits",GoCredits)
+	MenuItem.NEW("Change User",ChangeUser)
+	MenuItem.NEW("Quit",GoQuit)
 end
 
 global void BUB_Draw()
+	int m
+	m = Screen.Width/2
 	DrawAquarium()
+	CheckTextName()
 	logoy = 100 + math.floor(math.sin(logosin)*10);
 	logosin = logosin + MENU_LOGOSIN_SPEED // ?
 	if logosin>10000 then logosin = logosin * (-1) end
 	logo.Draw(logox-logomx,logoy-logomy)
+	for MItem in MenuItem.List.Each
+		MItem.Button.Draw(m-(MenuItem.Button.Width/2),MItem.y)
+		MItem.TextCaption.Draw(m,MItem.y+15,2,2)
+	end
 	DrawMascot()
 	ShowMouse()
 end
@@ -72,6 +162,12 @@ end
 global void BUB_Update()
 end
 
+global void BUB_KeyPressed(string name, code)
+	if name=="F1" and DebugMode
+		GoConsole();
+		return
+	end
+end
 
 
 

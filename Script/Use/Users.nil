@@ -1,0 +1,12 @@
+#use "libs/strings"
+
+global void LoadUser(string user)
+end
+
+global void SaveUser(string user)
+	var sav
+	CSayF("Saving user: %s",user)
+	sav = BubSave.StartJCRSave(sprintf("Users/%s",user))
+	sav.SuperGlobals = SuperGlobal
+	sav.Close=true	
+end

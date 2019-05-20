@@ -24,6 +24,7 @@
 // Version: 19.05.20
 // End License Information
 
+#use "Script/Use/Users"
 
 
 
@@ -41,7 +42,14 @@ global void Bubble_Init()
 	CSay("Init savegame data")
 	CSay("Directory: "..BubSave.WorkDir)
 	
+	// Get last user
+	if BubSave.Exists("LastUser") 
+		LoadUser(BubSave.LoadString("LastUser"))		
+	end
 	
+	// Load Fonts
+	LoadImageFont("Fonts/angelina.25.jfbf","SPEAK")
+	LoadImageFont("Fonts/final.25.jfbf","TYPE")
 	
 	// Load Aquarium
 	LoadState("AQUA","Script/State/Aquarium.nil")
@@ -52,9 +60,6 @@ global void Bubble_Init()
 	// Mouse Pointer
 	LoadImage("GFX/UI/MousePointer.png","MOUSEPOINTER")
 	
-	// Load Fonts
-	LoadImageFont("Fonts/angelina.25.jfbf","SPEAK")
-	LoadImageFont("Fonts/final.25.jfbf","TYPE")
 
 
 

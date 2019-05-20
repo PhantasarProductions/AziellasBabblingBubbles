@@ -27,6 +27,7 @@
 
 
 #use 'libs/strings'
+#use 'Script/Use/Debug'
 #use 'Script/Use/Aquarium_link'
 #use 'Script/Use/Mascotte'
 
@@ -102,6 +103,10 @@ global void BUB_Update()
 end
 
 global void BUB_KeyPressed(string kname,int kcode)
+	if kname=="F1" and DebugMode
+		GoConsole();
+		return
+	end
 	if Stage==1
 		switch kname
 			case "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"
