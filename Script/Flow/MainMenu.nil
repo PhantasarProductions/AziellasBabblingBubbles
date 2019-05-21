@@ -25,6 +25,8 @@
 // End License Information
 
 
+
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'Script/Use/Debug'
@@ -47,6 +49,8 @@ class MenuItem
 	static int nexty
 	static var List
 	static var Button
+	static int sinlight
+	static var chosen
 	
 	void CONSTRUCTOR(string caption,action)
 		CSay("Creating Main Menu Item: "..caption)
@@ -90,6 +94,7 @@ int logomy
 int logosin
 string CurrentName = ""
 var TextName
+var Copyright
 
 void CheckTextName()
 	if SuperGlobal.UserName!=CurrentName
@@ -140,6 +145,7 @@ global void BUB_Load()
 	MenuItem.NEW("Credits",GoCredits)
 	MenuItem.NEW("Change User",ChangeUser)
 	MenuItem.NEW("Quit",GoQuit)
+	Copyright = TypeFont.Text("(c) Copyright Jeroen P. Broks")
 end
 
 global void BUB_Draw()
@@ -151,10 +157,18 @@ global void BUB_Draw()
 	logosin = logosin + MENU_LOGOSIN_SPEED // ?
 	if logosin>10000 then logosin = logosin * (-1) end
 	logo.Draw(logox-logomx,logoy-logomy)
+	MenuItem.chosen = nil // Make sure nothing is chosen before checking!
 	for MItem in MenuItem.List.Each
 		MItem.Button.Draw(m-(MenuItem.Button.Width/2),MItem.y)
+		if Mouse.Y>MItem.y and Mouse.Y<MItem.y+50
+			MItem.chosen = MItem
+			MItem.sinlight = MItem.sinlight + (MENU_LOGOSIN_SPEED / 31 )
+			Color( math.abs( math.sin(MItem.sinlight)*255), math.abs( math.sin(MItem.sinlight) * 75 ) + 180 , 255 )
+		end
 		MItem.TextCaption.Draw(m,MItem.y+15,2,2)
+		Color(255,255,255)
 	end
+	Copyright.Draw(m,Screen.Height-27,2)
 	DrawMascot()
 	ShowMouse()
 end
@@ -169,6 +183,8 @@ global void BUB_KeyPressed(string name, code)
 		return
 	end
 end
+
+
 
 
 
