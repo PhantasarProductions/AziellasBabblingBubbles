@@ -122,6 +122,7 @@ global void BUB_KeyPressed(string kname,int kcode)
 			case "Enter"
 				if #name>0
 					SuperGlobal.UserName=name
+					BubSave.SaveString(name,"LastUser")
 					Stage = 2
 				end
 		end

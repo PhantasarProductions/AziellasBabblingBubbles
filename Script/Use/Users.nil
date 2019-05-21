@@ -28,6 +28,10 @@
 #use "libs/strings"
 
 global void LoadUser(string user)
+	var sav
+	CSayF("Loading User: %s",user)
+	sav = BubSave.LoadFromJCR(sprintf("Users/%s",user),true)
+	SuperGlobal.UserName = user
 end
 
 global void SaveUser(string user)

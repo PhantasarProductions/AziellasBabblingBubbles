@@ -36,8 +36,10 @@ global void Bubble_Init()
 	// Set up superglobal
 	CSay("Init SuperGlobal")
 	SuperGlobal["#strict"]='true';
-	SuperGlobal["#string"]='User';
-	SuperGlobal.User="";
+	SuperGlobal["#string"]='UserName';
+	SuperGlobal["#string"]='Config';
+	SuperGlobal["#string"]='InGame';
+	SuperGlobal.UserName="";
 	
 	// Savegame configuration
 	CSay("Init savegame data")
@@ -45,7 +47,8 @@ global void Bubble_Init()
 	
 	// Get last user
 	if BubSave.Exists("LastUser") 
-		LoadUser(BubSave.LoadString("LastUser"))		
+		SuperGlobal.UserName = BubSave.LoadString("LastUser")
+		assert(SuperGlobal.UserName,"Retrieving LastUser failed")
 	end
 	
 	// Load Fonts
@@ -66,12 +69,18 @@ global void Bubble_Init()
 
 	// Load user
 	// TODO: actual load code!	
-	if (SuperGlobal.User=="")
+	if (SuperGlobal.UserName=="")
 		// If no user present go to the Load User flow!
 		LoadFlow("NEWUSER","Script/Flow/NewUser.nil")
-		GoToFlow("NEWUSER")		
+		GoToFlow("NEWUSER")
+	elseif not BubSave.Exists("Users/"..SuperGlobal.UserName)
+		CWriteLine("User "..SuperGlobal.UserName.." does not exist, so reverting to user creation screen!",255,0,0)
+		SuperGlobal.UserName = "" // User must be reset!
+		LoadFlow("NEWUSER","Script/Flow/NewUser.nil")
+		GoToFlow("NEWUSER")
 	else
 		// Go to the main menu
+		LoadUser(SuperGlobal.UserName)		
 		GoToFlow("MAINMENU")
 		
 	end

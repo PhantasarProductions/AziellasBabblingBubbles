@@ -34,6 +34,7 @@
 #use 'Script/Use/Mascotte'
 #use 'Script/Use/Music'
 #use 'Script/Use/ShowMouse'
+#use 'Script/Use/Users'
 
 #macro MENU_LOGOSIN_SPEED 0.1
 
@@ -126,6 +127,8 @@ void ChangeUser()
 end
 
 void GoQuit()
+	SaveUser(SuperGlobal.UserName)
+	Bye()
 end
 
 global void BUB_Load()
@@ -169,7 +172,9 @@ global void BUB_Draw()
 		Color(255,255,255)
 	end
 	Copyright.Draw(m,Screen.Height-27,2)
-	DrawMascot()
+	if StateExists("MASCOT")
+		DrawMascot()
+	end
 	ShowMouse()
 end
 
@@ -184,8 +189,11 @@ global void BUB_KeyPressed(string name, code)
 	end
 end
 
-
-
+global void BUB_MousePressed(string button)
+	if button=="Left" and MenuItem.chosen
+		MenuItem.chosen.action()
+	end
+end
 
 
 
