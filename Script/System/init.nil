@@ -40,6 +40,8 @@ global void Bubble_Init()
 	SuperGlobal["#string"]='Config';
 	SuperGlobal["#string"]='InGame';
 	SuperGlobal.UserName="";
+	SuperGlobal.Config="";
+	SuperGlobal.InGame="";
 	
 	// Savegame configuration
 	CSay("Init savegame data")

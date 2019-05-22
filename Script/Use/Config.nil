@@ -1,0 +1,26 @@
+class TConfig
+	bool ColorBlind
+	bool Tutorials
+	string GameJoltUser
+	string GameJoltToken
+	
+	void Store()
+		SuperGlobal.Config = self[".dump"]
+	end
+	
+	private void Retrieve()
+		self[".dump"] = SuperGlobal.Config
+	end
+	
+	void CONSTRUCTOR()
+		self.ColorBlind = false
+		self.Tutorials = true
+		if SuperGlobal.Config!="" 
+			self.Retrieve
+		end
+	end
+		
+end
+
+global var Config
+Config = TConfig.NEW()

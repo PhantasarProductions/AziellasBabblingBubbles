@@ -1,0 +1,82 @@
+#use 'libs/strings'
+#use 'libs/linkedlist'
+#use 'Script/Use/Debug'
+#use 'Script/Use/Aquarium_link'
+#use 'Script/Use/Mascotte'
+#use 'Script/Use/Music'
+#use 'Script/Use/ShowMouse'
+#use 'Script/Use/Users'
+#use 'Script/Use/Config'
+
+#macro ITEM_X 100
+
+table CheckBox
+var TypeFont
+
+class ConfigItems
+	static var List
+	static int cy = 80
+	static var Hover
+	
+	string Kind
+	string Field
+	string Caption
+	var CText
+	int y
+	
+	void Draw()
+		switch self.Kind
+			case "Label"
+				CText.Draw(ITEM_X,self.y)
+		end
+	end
+	
+	void Click()
+	end
+	
+	void CONSTRUCTOR(string K, string F, string C)
+		self.Kind=K
+		self.Field = F
+		self.Caption = C
+		self.CText = TypeFont.Text(C)
+		self.List = self.List or linkedlist.NEW()
+		self.y = self.cy
+		self.cy = self.cy + 30
+		self.List.Add(self)
+	end
+	
+end
+
+
+void Toggle(string boolfield)
+	SuperGlobals[boolfield] = not SuperGlobals[boolfield]
+end
+
+
+global void BUB_Load()
+	CheckBox[true ]=LoadImage("GFX/UI/Check.png")
+	CheckBox[false]=LoadImage("GFX/UI/UnCheck.png")
+	TypeFont = GetFont("TYPE")
+	ConfigItems.NEW("Boolean","ColorBlind","Color Blind Mode")
+	ConfigItems.NEW("Boolean","Tutorials","Tutorials")
+	ConfigItems.NEW("Label","","Game Jolt")
+	ConfigItems.NEW("String","GameJoltUser","User Name")
+	ConfigItems.NEW("String","GameJoltToken","Token")
+	ConfigItems.NEW("Back","
+end
+
+global void BUB_Draw()
+	// Aquarium
+	int m
+	m = Screen.Width/2
+	DrawAquarium()
+
+	// Actual code
+	
+	// Mascot & Mouse
+	if StateExists("MASCOT")
+		DrawMascot()
+	end
+	ShowMouse()
+end
+
