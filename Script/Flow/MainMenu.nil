@@ -118,6 +118,8 @@ void StartGame()
 end
 
 void GoConfig()
+	LoadFlow("CONFIG","Script/Flow/Config.nil")
+	GoToFlow("CONFIG")
 end
 
 void GoCredits()

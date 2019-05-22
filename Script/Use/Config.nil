@@ -15,12 +15,13 @@ class TConfig
 	void CONSTRUCTOR()
 		self.ColorBlind = false
 		self.Tutorials = true
-		if SuperGlobal.Config!="" 
-			self.Retrieve
+		if SuperGlobal.Config!="" and SuperGlobal.Config!="nil"
+			self.Retrieve()
 		end
 	end
 		
 end
 
-global var Config
-Config = TConfig.NEW()
+
+return TConfig.NEW()
+

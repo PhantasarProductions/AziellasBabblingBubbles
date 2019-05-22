@@ -6,7 +6,7 @@
 #use 'Script/Use/Music'
 #use 'Script/Use/ShowMouse'
 #use 'Script/Use/Users'
-#use 'Script/Use/Config'
+#use 'Script/Use/Config' 
 
 #macro ITEM_X 100
 
@@ -27,7 +27,7 @@ class ConfigItems
 	void Draw()
 		switch self.Kind
 			case "Label"
-				CText.Draw(ITEM_X,self.y)
+				self.CText.Draw(ITEM_X,self.y)
 		end
 	end
 	
@@ -39,30 +39,38 @@ class ConfigItems
 		self.Field = F
 		self.Caption = C
 		self.CText = TypeFont.Text(C)
-		self.List = self.List or linkedlist.NEW()
+		self.List = self.List or TLinkedList.NEW()
 		self.y = self.cy
 		self.cy = self.cy + 30
-		self.List.Add(self)
+		self.List.AddLast(self)
+		CSayF("CONFIG: Created %s: %s",F,C)
 	end
 	
 end
 
 
 void Toggle(string boolfield)
-	SuperGlobals[boolfield] = not SuperGlobals[boolfield]
+	SuperGlobal[boolfield] = not SuperGlobal[boolfield]
 end
 
+void GoHome()
+	GoToFlow("MAINMENU")
+	KillFlow("CONFIG")
+end
 
 global void BUB_Load()
+	CSay("CONFIG: Loading checkboxes")
 	CheckBox[true ]=LoadImage("GFX/UI/Check.png")
 	CheckBox[false]=LoadImage("GFX/UI/UnCheck.png")
+	CSay("CONFIG: Font 4 config")
 	TypeFont = GetFont("TYPE")
+	CSay("CONFIG: Items")
 	ConfigItems.NEW("Boolean","ColorBlind","Color Blind Mode")
 	ConfigItems.NEW("Boolean","Tutorials","Tutorials")
 	ConfigItems.NEW("Label","","Game Jolt")
 	ConfigItems.NEW("String","GameJoltUser","User Name")
 	ConfigItems.NEW("String","GameJoltToken","Token")
-	ConfigItems.NEW("Back","
+	ConfigItems.NEW("Back","Back to Menu","Back to Menu")
 end
 
 global void BUB_Draw()
@@ -72,11 +80,24 @@ global void BUB_Draw()
 	DrawAquarium()
 
 	// Actual code
+	for Item in ConfigItems.List.Each
+		Item.Draw()
+	end
 	
 	// Mascot & Mouse
 	if StateExists("MASCOT")
 		DrawMascot()
 	end
 	ShowMouse()
+end
+
+global void BUB_KeyPressed(string name, code)
+	if name=="F1" and DebugMode
+		GoConsole();
+		return
+	end
+	if name=="Escape"
+		GoHome()
+	end
 end
 
