@@ -12,11 +12,25 @@
 
 table CheckBox
 var TypeFont
+var Previous
+
+void GoHome()
+	Config.Store()
+	GoToFlow("MAINMENU")
+	KillFlow("CONFIG")
+end
+
+void Toggle(string boolfield)
+	Config[boolfield] = not Config[boolfield]
+end
+
 
 class ConfigItems
 	static var List
 	static int cy = 80
 	static var Hover
+	static var Active
+	static int strw
 	
 	string Kind
 	string Field
@@ -28,10 +42,50 @@ class ConfigItems
 		switch self.Kind
 			case "Label"
 				self.CText.Draw(ITEM_X,self.y)
+			case "Boolean"
+				CheckBox[Config[self.Field]]["Draw"](ITEM_X,self.y-5)
+				self.CText.Draw(ITEM_X+55,self.y)
+			case "String"
+				int w
+				w = Screen.Width-ITEM_X-self.strw-20
+				self.Active = self.Active or self
+				self.CText.Draw(ITEM_X,self.y)
+				if self.Active==self
+					Color(25,18,0)
+					Rect(ITEM_X+self.strw,self.y,w,30)
+					Color(255,180,0)
+					TypeFont.Draw(Config[self.Field].."#",ITEM_X+self.strw+3,self.y)
+				else
+					Color(2,1,0)
+					Rect(ITEM_X+self.strw,self.y,w,30)
+					Color(25,18,0)
+					TypeFont.Draw(Config[self.Field],ITEM_X+self.strw+3,self.y)
+				end
+				if self.CText.Width+5>self.strw then self.strw = self.strw+2 end
+			case "Back"
+				Color(255,255,255)
+				Previous = Previous or LoadImage("GFX/UI/Previous.png")
+				Previous.Draw(ITEM_X,self.y)
+		end
+		if Mouse.Y>self.y and Mouse.Y<self.y+50
+			self.Hover = self
+			// Rect(0,self.y,4,40) // debug
 		end
 	end
 	
 	void Click()
+		CSay("Clicked: "..self.Kind)
+		switch self.Kind
+			case "Boolean"
+				CSay("Toggling field: "..self.Field)
+				Toggle(self.Field)
+			case "String"
+				CSay("Activating: "..self.Field)
+				self.Active = self.Hover
+			case "Back"
+				CSay("Back to the main menu!")
+				GoHome()
+		end
 	end
 	
 	void CONSTRUCTOR(string K, string F, string C)
@@ -41,7 +95,7 @@ class ConfigItems
 		self.CText = TypeFont.Text(C)
 		self.List = self.List or TLinkedList.NEW()
 		self.y = self.cy
-		self.cy = self.cy + 30
+		self.cy = self.cy + 50
 		self.List.AddLast(self)
 		CSayF("CONFIG: Created %s: %s",F,C)
 	end
@@ -49,14 +103,7 @@ class ConfigItems
 end
 
 
-void Toggle(string boolfield)
-	SuperGlobal[boolfield] = not SuperGlobal[boolfield]
-end
 
-void GoHome()
-	GoToFlow("MAINMENU")
-	KillFlow("CONFIG")
-end
 
 global void BUB_Load()
 	CSay("CONFIG: Loading checkboxes")
@@ -80,6 +127,7 @@ global void BUB_Draw()
 	DrawAquarium()
 
 	// Actual code
+	ConfigItems.Hover = nil // reset
 	for Item in ConfigItems.List.Each
 		Item.Draw()
 	end
@@ -98,6 +146,12 @@ global void BUB_KeyPressed(string name, code)
 	end
 	if name=="Escape"
 		GoHome()
+	end
+end
+
+global void BUB_MousePressed(string button,int x, int y)
+	if ConfigItems.Hover 
+		ConfigItems.Hover.Click()
 	end
 end
 
