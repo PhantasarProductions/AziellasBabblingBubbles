@@ -1,0 +1,183 @@
+#use 'libs/strings'
+#use 'libs/linkedlist'
+#use 'libs/tables'
+#use 'Script/Use/Debug'
+#use 'Script/Use/Aquarium_link'
+#use 'Script/Use/Mascotte'
+#use 'Script/Use/Music'
+#use 'Script/Use/ShowMouse'
+#use 'Script/Use/Users'
+#use 'Script/Use/Config' 
+
+#macro TileSize 32
+#macro FieldSize 14
+
+var IGFont
+int px_SZ 
+IGFont = LoadImageFont("Fonts/CaviarDreams.20.jfbf")
+
+table BubCol
+class TBubCol
+	int R
+	int G
+	int B
+	
+	void CONSTRUCTOR(aR,aG,aB)
+		self.R=aR
+		self.G=aG
+		self.B=aB
+		BubCol[#BubCol+1]=self
+	end
+end
+
+class TObject
+	bool bubble
+	int bubcol
+	int corx
+	int cory
+end
+
+class TGame
+	int Score = 0
+	int Level = 1
+	table tools
+	private table ttools
+	private table mtools
+	
+	void CONSTRUCTOR()
+		table tool2number
+		table number2tool
+		tool2number.bomb = 1
+		number2tool[1]="bomb"
+		self.mtools.__index = var(t,k)
+			switch type(k)
+				case "string"
+					if k:upper()=="EACH"
+						int i
+						return var()
+							i=i+1
+							if i>#number2tool 
+								return nil,nil // nothing!
+							end
+							return i,number2tool[i]
+						end
+					end
+					assert(tool2number[k],"GET:I don't know tool '"..k.."'")
+					return self.ttools[tool2number[k]] or 0
+				case "number"
+					assert(number2tool[k],"GET:I don't know tool #"..k)
+					return self.ttools[k]
+				default
+					error("GET:I cannot deal with tools indexed with a "..type(k))
+			end
+		end
+		self.mtools.__newindex = int(t,k,v)
+			switch type(k)
+				case "string"
+					assert(tool2number[k],"SET:I don't know tool '"..k.."'")
+					self.ttools[tool2number[k]] = tonumber(v) or 0
+				case "number"
+					assert(number2tool[k],"SET:I don't know tool #"..k)
+					self.ttools[k] = tonumber(v) or 0
+				default
+					error("SET:I cannot deal with tools indexed with a "..type(k))
+			end
+		end
+		setmetatable(self.tools,self.mtools)
+	end
+end
+var Game
+var Tools
+Game = TGame.NEW()
+Tools = Game.tools // Quick references, because I am LAZY!
+
+class TScoreShow
+	static table nums
+	int Old
+	int Show
+	string Link
+	var Text
+	string Caption
+	var CaptionText
+	get int Actual
+		return Game[self.Link]
+	end
+	set int Actual
+		Game[self.Link]=value
+	end
+	
+	void Draw(int y)
+		int verschil
+		SetColor(255,180,0)
+		self.CaptionText.Draw(Screen.Width-5,y,TEXT_ALIGN_RIGHT)
+		SetColor(255,255,255)
+		if self.Show>=self.Actual
+			self.Show=self.Actual
+		else
+			verschil = self.Actual-self.Show
+			if verschil<10
+				self.Show = self.Show + 1
+			end
+			for i in each(self.nums)
+				if verschil>i
+					self.Show=self.Self+math.random(0,i-5)
+				end
+			end
+		end
+		if (not self.Text) or self.Old!=self.Show
+			self.Text = IGFont.Text(""..self.Show)
+		end
+		self.Text.Draw(Screen.Width-5,y+35,TEXT_ALIGN_RIGHT)
+	end
+	
+	void CONSTRUCTOR(string setCaption,string setLink)
+		assert(type(Game[setLink])=="number","ScoreShow can only be used with numberic fields")
+		self.Link=setLink
+		self.Old=self.Actual
+		self.Show=self.Actual
+		self.Caption=self.Caption
+		self.CaptionText = IGFont.Text(setCaption)
+		if #self.nums==0
+			self.nums = {10,25,50,100,250,1000}
+		end
+	end
+end
+
+var SScore
+var SLevel
+SScore = TScoreShow.NEW("Score","Score")
+SLevel = TScoreShow.NEW("Level","Level")
+
+global void BUB_Load()
+	px_SZ = FieldSize * TileSize
+	TBubCol.NEW(255,0,0)
+	TBubCol.NEW(0,255,0)
+	TBubCol.NEW(0,0,255)
+	TBubCol.NEW(255,255,0)
+	TBubCol.NEW(255,0,255)
+	TBubCol.NEW(0,255,255)	
+end
+
+global void BUB_Draw()
+	// Aquarium
+	DrawAquarium()
+	
+	// Bubbles background
+	GraphColor.Alpha=123
+	SetColor(0,0,0)
+	Rect(10,10,px_SZ,px_SZ)
+	SetColor(255,255,255)
+	GraphColor.Alpha=255
+	
+	// Score screen
+	SScore.Draw(5)
+	SLevel.Draw(75)
+	
+	// Mascot
+	if StateExists("MASCOT")
+		DrawMascot()
+	end
+	
+	// Mouse
+	ShowMouse()
+end
