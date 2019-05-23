@@ -24,6 +24,8 @@
 // Version: 19.05.22
 // End License Information
 
+
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'Script/Use/Debug'
@@ -172,6 +174,23 @@ global void BUB_KeyPressed(string name, code)
 	end
 	if name=="Escape"
 		GoHome()
+		return
+	end
+	int bt
+	string ch
+	string fld
+	int w
+	var Active
+	Active = ConfigItems.Active
+	ch = Keyboard.Char
+	bt = Keyboard.Byte
+	fld = Active.Field
+	w = Screen.Width-ITEM_X-Active.strw-20
+	CSayF("Key Pressed %s/%d >> char=%s >> byte=%d!",name,code,ch,bt)
+	if (ch==" " or ch=="-" or ch=="_" or (bt>=97 and bt<=122) or (bt>=65 and bt<=90) or (bt>=48 and bt<=57)) and (TypeFont.TextWidth(Config[fld])+35<w)
+		Config[fld] = Config[fld] .. ch
+	elseif name=="Back" and Config[fld]!=""
+		Config[fld] = left(Config[fld],#(Config[fld])-1)
 	end
 end
 
@@ -180,5 +199,7 @@ global void BUB_MousePressed(string button,int x, int y)
 		ConfigItems.Hover.Click()
 	end
 end
+
+
 
 
