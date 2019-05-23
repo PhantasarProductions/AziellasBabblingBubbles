@@ -114,8 +114,9 @@ void CheckTextName()
 	Color(255,255,255)
 end
 
-
 void StartGame()
+	LoadFlow("GAME","Script/Flow/Game.nil")
+	GoToFlow("GAME")
 end
 
 void GoConfig()
