@@ -108,11 +108,11 @@ class Map
 		for i,d in pairs(Map.Level) 
 			ret = ret .. sprintf("Map.Level[%d]['Dump'] = \"%s\"\n",i,SafeString(d.Dump))
 		end
-		ret = ret .. sprintf("Map.Data['.dump'] = \"%s\"\n",SaveString(Map.Data[".dump"])
+		ret = ret .. sprintf("Map.Data['.dump'] = \"%s\"\n",SafeString(Map.Data[".dump"]))
 		return ret
 	end
 	
-	static string LoadAllFromScript(string script)
+	static void LoadAllFromScript(string script)
 		//-- I set this in a "pure" as older Lua versions use 'loadstring' and newer versions just 'load', however newer Lua versions can bring NIL into conflict as a result
 		delegate l
 		delegate f
@@ -134,7 +134,7 @@ class Map
 		var level
 		file = sprintf("Data/Levels/%03d",levelnumber)
 		CSayF("Loading: \"%s\"",file)
-		assert(JCR_Exists(file),sprintf("Level #%d does not appear to exist!",levelnumber))
+		assert(JCR_EntryExists(file),sprintf("Level #%d does not appear to exist!",levelnumber))
 		Map.Level = {}
 		Map.Data = _MapData.NEW()
 		level = Map.Level
@@ -161,7 +161,7 @@ class Map
 						end
 					case "level"
 						assert(#line>=14,sprintf("Level line #%d too short! At 14 characters required!",ln))
-						if #line>14 then CSayF("Level line %d is too long!\n14 characters only and it is %d characters!\nThe rest's been truncated!",ln,#line) CSay('') Csay('') end
+						if #line>14 then CSayF("Level line %d is too long!\n14 characters only and it is %d characters!\nThe rest's been truncated!",ln,#line) CSay('') CSay('') end
 						ly = ly + 1
 						if (ly>14) 
 							CSay("Level line %d, goes over the max quote of a level! 14 lines only! Ignored!") 
@@ -172,7 +172,7 @@ class Map
 								ch = ch:upper()
 								int tp
 								var mp
-								tp = MapC2R(lx,ly)
+								tp = Map.C2R(lx,ly)
 								level[tp]=level[tp] or Map.NEW()
 								switch ch
 									case "1" "2" "3" "4" "5" "6" "7" "8" "9"
