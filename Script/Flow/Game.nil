@@ -1,3 +1,29 @@
+// License Information:
+// Aziella's Babbling Bubbles
+// Main Game Script
+// 
+// 
+// 
+// (c) Jeroen P. Broks, 
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+// Please note that some references to data like pictures or audio, do not automatically
+// fall under this licenses. Mostly this is noted in the respective files.
+// 
+// Version: 19.05.24
+// End License Information
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -30,17 +56,61 @@ class TBubCol
 	end
 end
 
-class TObject
+class Map
 	bool bubble
 	int bubcol
 	int corx
 	int cory
+	int tiles
+
+	get string Dump
+		string ret
+		ret = self[".dump"]
+		return ret
+	end
+	
+	set string Dump
+		self[".dump"]=value
+	end
+
+	
+	static table Level
+	static int C2Real(int x, int y)
+		assert(x>=1 and x<=FieldSize,sprintf("Objects.C2REAL(%d,%d): X-coordinate out of bounds! Must be a number from 1-FieldSize",x,y)
+		assert(y>=1 and y<=FieldSize,sprintf("Objects.C2REAL(%d,%d): y-coordinate out of bounds! Must be a number from 1-FieldSize",x,y)
+		return x + ((y-1)*FieldSize)
+	end
+	
+	static var Obj(int x,int y,def)
+		int real
+		real = C2Real(x,y)
+		if def!=nil
+			Map.Level[real]=def
+		end
+		return Map.Level[real]
+	end
+	
+	static string DumpAll()
+		string ret
+		for i,d in pairs(Objects.Level) 
+			ret = ret .. sprintf("Map.Level[%d]['Dump'] = \"%s\"\n",i,SafeString(d.Dump))
+		end
+		return ret
+	end
+	
+	static string LoadAllFromScript(string script)
+		delegate l
+		delegate f
+		l = loadstring or load
+		f = assert(l(script))
+		f()
+	end
 end
 
 class TGame
 	int Score = 0
 	int Level = 1
-	table tools
+	readonly table tools
 	private table ttools
 	private table mtools
 	
@@ -181,3 +251,4 @@ global void BUB_Draw()
 	// Mouse
 	ShowMouse()
 end
+
