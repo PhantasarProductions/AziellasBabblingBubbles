@@ -26,6 +26,7 @@
 
 
 
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -334,6 +335,9 @@ global void BUB_Load()
 	TBubCol.NEW(255,255,0)
 	TBubCol.NEW(255,0,255)
 	TBubCol.NEW(0,255,255)
+	TBubCol.NEW(255,180,0)
+	TBubCol.NEW(255,180,180)
+	TBubCol.NEW(180,0,255)
 	if (not SuperGlobal.Map) or SuperGlobal.Map=="" or SuperGlobal.Map=="nil"
 		Map.Load(Game.Level)
 	end
@@ -369,6 +373,7 @@ global void BUB_KeyPressed(string name,int code)
 		return
 	end
 end
+
 
 
 
