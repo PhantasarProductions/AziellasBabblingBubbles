@@ -59,12 +59,22 @@ class TBubCol
 	end
 end
 
+class _MapData
+	bool Tut
+	int MaxColor
+	int MaxTime
+	int FillReq
+end
+
 class Map
 	bool bubble
 	int bubcol
 	int corx
 	int cory
+	int x
+	int y
 	int tiles
+	var Data
 
 	get string Dump
 		string ret
@@ -98,6 +108,7 @@ class Map
 		for i,d in pairs(Map.Level) 
 			ret = ret .. sprintf("Map.Level[%d]['Dump'] = \"%s\"\n",i,SafeString(d.Dump))
 		end
+		ret = ret .. sprintf("Map.Data['.dump'] = \"%s\"\n",SaveString(Map.Data[".dump"])
 		return ret
 	end
 	
@@ -111,6 +122,79 @@ class Map
 		f = assert(l(script))
 		f()
 	end
+	
+	static void Load(int levelnumber)
+		string file
+		string tag
+		string fullcontent
+		int ly
+		int ty
+		var lines
+		var data
+		var level
+		file = sprintf("Data/Levels/%03d",levelnumber)
+		CSayF("Loading: \"%s\"",file)
+		assert(JCR_Exists(file),sprintf("Level #%d does not appear to exist!",levelnumber))
+		Map.Level = {}
+		Map.Data = _MapData.NEW()
+		level = Map.Level
+		data = Map.Data // LAAAAZY!
+		fullcontent = JCR_GetString(file)
+		lines = Split(fullcontent,"\n")
+		for ln,line in lines
+			if left(line,1)=="#"
+				// Let's do nothing at all... It's just a comment, after all
+			elseif left(line,1)=="[" and right(line,1)=="]"
+				tag=mid(line,2,#line-2)
+				tag=tag:lower()
+			else
+				// Time to load SHIT!
+				switch tag
+					case "data"
+						table p
+						p = split(line,"=")
+						switch p[1]
+							case "Tut"
+								data[p[1]] = p[2]["upper"]()=="Yes"
+							default
+								data[p[1]] = tonumber(p[2])
+						end
+					case "level"
+						assert(#line>=14,sprintf("Level line #%d too short! At 14 characters required!",ln))
+						if #line>14 then CSayF("Level line %d is too long!\n14 characters only and it is %d characters!\nThe rest's been truncated!",ln,#line) CSay('') Csay('') end
+						ly = ly + 1
+						if (ly>14) 
+							CSay("Level line %d, goes over the max quote of a level! 14 lines only! Ignored!") 
+						else
+							for lx = 1 , 14
+								string ch
+								ch = mid(line,lx,1)
+								ch = ch:upper()
+								int tp
+								var mp
+								tp = MapC2R(lx,ly)
+								level[tp]=level[tp] or Map.NEW()
+								switch ch
+									case "1" "2" "3" "4" "5" "6" "7" "8" "9"
+										mp=level[tp]
+										mp.bubble=true
+										mp.bubcol=tonumber(ch) or 0
+									case "R"
+										mp=level[tp]
+										mp.bubble=true
+										mp.bubcol=math.random(1,Map.Data.MaxColor)
+									default
+										error("Unknown level tag >> "..ch)
+								end
+							end
+						end
+					default
+						error(sprintf("Instructions for unknown tag '%s' cannot be dealt with",tag))
+				end
+			end
+		end
+	end
+	
 end
 
 class TGame
