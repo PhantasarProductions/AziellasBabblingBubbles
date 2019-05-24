@@ -24,6 +24,7 @@
 // Version: 19.05.24
 // End License Information
 
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -37,6 +38,8 @@
 
 #macro TileSize 32
 #macro FieldSize 14
+#macro FieldX 20
+#macro FieldY 5
 
 var IGFont
 int px_SZ 
@@ -76,15 +79,15 @@ class Map
 	
 	static table Level
 	static int C2Real(int x, int y)
-		assert(x>=1 and x<=FieldSize,sprintf("Objects.C2REAL(%d,%d): X-coordinate out of bounds! Must be a number from 1-FieldSize",x,y)
-		assert(y>=1 and y<=FieldSize,sprintf("Objects.C2REAL(%d,%d): y-coordinate out of bounds! Must be a number from 1-FieldSize",x,y)
+		assert(x>=1 and x<=FieldSize,sprintf("Objects.C2REAL(%d,%d): X-coordinate out of bounds! Must be a number from 1-FieldSize",x,y))
+		assert(y>=1 and y<=FieldSize,sprintf("Objects.C2REAL(%d,%d): y-coordinate out of bounds! Must be a number from 1-FieldSize",x,y))
 		return x + ((y-1)*FieldSize)
 	end
 	
 	static var Obj(int x,int y,def)
 		int real
 		real = C2Real(x,y)
-		if def!=nil
+		if def!=nil then
 			Map.Level[real]=def
 		end
 		return Map.Level[real]
@@ -92,16 +95,19 @@ class Map
 	
 	static string DumpAll()
 		string ret
-		for i,d in pairs(Objects.Level) 
+		for i,d in pairs(Map.Level) 
 			ret = ret .. sprintf("Map.Level[%d]['Dump'] = \"%s\"\n",i,SafeString(d.Dump))
 		end
 		return ret
 	end
 	
 	static string LoadAllFromScript(string script)
+		//-- I set this in a "pure" as older Lua versions use 'loadstring' and newer versions just 'load', however newer Lua versions can bring NIL into conflict as a result
 		delegate l
 		delegate f
-		l = loadstring or load
+		#pure
+		l = loadstring or load 
+		#endpure
 		f = assert(l(script))
 		f()
 	end
@@ -235,7 +241,7 @@ global void BUB_Draw()
 	// Bubbles background
 	GraphColor.Alpha=123
 	SetColor(0,0,0)
-	Rect(10,10,px_SZ,px_SZ)
+	Rect(FieldX,FieldY,px_SZ,px_SZ)
 	SetColor(255,255,255)
 	GraphColor.Alpha=255
 	
@@ -251,4 +257,12 @@ global void BUB_Draw()
 	// Mouse
 	ShowMouse()
 end
+
+global void BUB_KeyPressed(string name,int code)
+	if name=="F1" and DebugMode
+		GoConsole();
+		return
+	end
+end
+
 
