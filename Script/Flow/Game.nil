@@ -25,6 +25,7 @@
 // End License Information
 
 
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -64,6 +65,9 @@ class _MapData
 	int MaxColor
 	int MaxTime
 	int FillReq
+	void CONSTRUCTOR()
+		CSay("MapData created")
+	end
 end
 
 class Map
@@ -74,7 +78,8 @@ class Map
 	int x
 	int y
 	int tiles
-	var Data
+	
+	static var Data
 
 	get string Dump
 		string ret
@@ -84,6 +89,11 @@ class Map
 	
 	set string Dump
 		self[".dump"]=value
+	end
+	
+	void CONSTRUCTOR(int x, int y)
+		self.x = x
+		self.y = y
 	end
 
 	
@@ -127,26 +137,32 @@ class Map
 		string file
 		string tag
 		string fullcontent
-		int ly
-		int ty
+		int ly = 0
+		int ty = 0
 		var lines
 		var data
 		var level
-		file = sprintf("Data/Levels/%03d",levelnumber)
-		CSayF("Loading: \"%s\"",file)
+		file = Trim(sprintf("Data/Levels/%03d",levelnumber))
+		CSayF("Checking: \"%s\"",file)
 		assert(JCR_EntryExists(file),sprintf("Level #%d does not appear to exist!",levelnumber))
 		Map.Level = {}
+		CSay("Creating new MapData record")
 		Map.Data = _MapData.NEW()
+		CSay("Creating coding shortcuts")
 		level = Map.Level
 		data = Map.Data // LAAAAZY!
+		CSayF("Loading: \"%s\"",file)
 		fullcontent = JCR_GetString(file)
+		CSay("Preparing data")
 		lines = Split(fullcontent,"\n")
-		for ln,line in lines
+		CSay("Parsing")
+		for ln,line in ipairs(lines)
 			if left(line,1)=="#"
 				// Let's do nothing at all... It's just a comment, after all
 			elseif left(line,1)=="[" and right(line,1)=="]"
 				tag=mid(line,2,#line-2)
 				tag=tag:lower()
+				CSay("= "..tag)
 			else
 				// Time to load SHIT!
 				switch tag
@@ -155,16 +171,18 @@ class Map
 						p = split(line,"=")
 						switch p[1]
 							case "Tut"
-								data[p[1]] = p[2]["upper"]()=="Yes"
+								// This dirty syntax is because of a few bugs in the early versions if NIL
+								data[p[1]] = p[2]["upper"](p[2])=="YES" 
 							default
 								data[p[1]] = tonumber(p[2])
 						end
 					case "level"
 						assert(#line>=14,sprintf("Level line #%d too short! At 14 characters required!",ln))
-						if #line>14 then CSayF("Level line %d is too long!\n14 characters only and it is %d characters!\nThe rest's been truncated!",ln,#line) CSay('') CSay('') end
+						if #line>14 then CSayF("Level line #%d is too long!\n14 characters only and it is %d characters!\nThe rest's been truncated!",ln,#line) CSay('') CSay('') end
 						ly = ly + 1
+						CSayF(" = Row #%d ",ly)
 						if (ly>14) 
-							CSay("Level line %d, goes over the max quote of a level! 14 lines only! Ignored!") 
+							CSayF("Level line #%d, goes over the max quota of 14 lines!",ly) 
 						else
 							for lx = 1 , 14
 								string ch
@@ -172,8 +190,8 @@ class Map
 								ch = ch:upper()
 								int tp
 								var mp
-								tp = Map.C2R(lx,ly)
-								level[tp]=level[tp] or Map.NEW()
+								tp = Map.C2Real(lx,ly)
+								level[tp]=level[tp] or Map.NEW(lx*TileSize,((-TileSize)*16)+TileSize*ly)
 								switch ch
 									case "1" "2" "3" "4" "5" "6" "7" "8" "9"
 										mp=level[tp]
@@ -315,7 +333,10 @@ global void BUB_Load()
 	TBubCol.NEW(0,0,255)
 	TBubCol.NEW(255,255,0)
 	TBubCol.NEW(255,0,255)
-	TBubCol.NEW(0,255,255)	
+	TBubCol.NEW(0,255,255)
+	if (not SuperGlobal.Map) or SuperGlobal.Map=="" or SuperGlobal.Map=="nil"
+		Map.Load(Game.Level)
+	end
 end
 
 global void BUB_Draw()
@@ -348,5 +369,6 @@ global void BUB_KeyPressed(string name,int code)
 		return
 	end
 end
+
 
 
