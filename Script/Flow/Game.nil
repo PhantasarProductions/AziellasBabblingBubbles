@@ -25,6 +25,7 @@
 // End License Information
 
 
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -49,7 +50,9 @@
 #macro xFlipV 550
 #macro yFlip 150
 
-#accept Game
+// needed later
+var Game
+
 
 bool intutor
 var ImgBubble
@@ -60,6 +63,20 @@ var FlipVer
 var IGFont
 int px_SZ 
 IGFont = LoadImageFont("Fonts/CaviarDreams.20.jfbf")
+
+delegate realerror
+realerror = error
+#pure
+local error
+local assert
+#endpure
+error = void(string fout)
+	realerror(fout.."\n\n"..debug.traceback())
+end
+assert = var(bewering, foutmelding)
+	if not bewering then error(foutmelding) end
+	return bewering
+end
 
 table BubCol
 class TBubCol
@@ -95,6 +112,8 @@ class Map
 	int tiles
 	bool popping
 	
+	static int hoverx
+	static int hovery
 	static var Data
 
 	get string Dump
@@ -238,10 +257,11 @@ class Map
 		for iy=1,FieldSize
 			var testobj
 			testobj = Map.Level[Map.C2Real(x,iy)]
-			if iy!=y and obj.y>=testobj.y
+			if testobj and iy!=y and obj.y>=testobj.y
 				obj.y=testobj.y-64
 			end
 		end
+		Map.Level[Map.C2Real(x,y)]=obj
 	end
 	
 	static void DrawReal(int idx)
@@ -277,12 +297,20 @@ class Map
 				if (obj.x>cx) then obj.x = obj.x - 2 end
 				if (obj.y<cy) then obj.y = obj.y + 2 end
 				if (obj.y>cy) then obj.y = obj.y - 2 end
+				if Mouse.X>cx and Mouse.Y>cy and Mouse.X<cx+TileSize and Mouse.Y<cy+TileSize
+					Map.hoverx = x
+					Map.hovery = y
+					Color(math.random(1,255),math.random(1,255),math.random(1,255))
+					Rect(cx, cy, TileSize, TileSize, 'line')
+				end
 			end
 		end
-		Map.DrawReal(idx)
+		if Map.Level[idx] then Map.DrawReal(idx) end
 	end
 	
 	static void DrawAll(dontmove)
+		Map.hoverx = 0
+		Map.hovery = 0
 		for y=1,FieldSize
 			for x=1,FieldSize
 				Map.Draw(x,y,dontmove)
@@ -348,25 +376,29 @@ class Map
 	end 
 	
 	static void Pop(int x, int y)
+		var obj
 		int popped
 		table q
 		q[1]=1
 		q[2]=-1
-		void minipop(int x, int y)			
-			int a
+		void minipop(int x, int y, int color)			
+			var a
 			a = Map.Level[Map.C2Real(x,y)]
+			if not a then return end
 			a.popping=true
 			for i in each(q)
-				a = Map.Level[Map.C2Real(x+i,y)];  if a.bubble and (not a.popping) then minipop(x+i,y) end
-				a = Map.Level[Map.C2Real(x,y+i)];  if a.bubble and (not a.popping) then minipop(x,y+i) end
+				if x+i>=1 and x+i<=FieldSize then a = Map.Level[Map.C2Real(x+i,y)];  if a.bubble and (not a.popping) and a.bubcol==color then minipop(x+i,y,color) end end
+				if y+i>=1 and y+i<=FieldSize then a = Map.Level[Map.C2Real(x,y+i)];  if a.bubble and (not a.popping) and a.bubcol==color then minipop(x,y+i,color) end end
 			end
-			popped = popped + 1			
+			popped = popped + 1
 		end
+		obj=Map.Level[Map.C2Real(x,y)]
+		minipop(x,y,obj.bubcol)
 		for i=1,FieldSize*FieldSize do
 			var obj
-			obj=Map.Table[i]
+			obj=Map.Level[i]
 			if obj and obj.popping then
-				Map.Table[i]=nil // Popped!
+				Map.Level[i]=nil // Popped!
 			end
 		end
 		Game.Score = Game.Score + (popped*popped)
@@ -424,7 +456,6 @@ class TGame
 		setmetatable(self.tools,self.mtools)
 	end
 end
-var Game
 var Tools
 Game = TGame.NEW()
 Tools = Game.tools // Quick references, because I am LAZY!
@@ -458,7 +489,7 @@ class TScoreShow
 			end
 			for i in each(self.nums)
 				if verschil>i
-					self.Show=self.Self+math.random(0,i-5)
+					self.Show=self.Show+math.random(0,i-5)
 				end
 			end
 		end
@@ -556,12 +587,14 @@ global void BUB_MousePressed(string button, int x, int y)
 	if intutor
 		// Comes later!
 	else
-		if     y>yRot  and y<yRot+RotClock.Height      and x>xRotCW  and x<xRotCW+RotClock.Width       then Map.RotateR()
-		elseif y>yRot  and y<yRot+RotCountClock.Height and x>xRotCCW and x<xRotCCW+RotCountClock.Width then Map.RotateL() end
-		if     y>yFlip and y<yFlip+FlipHor.Height      and x>xFlipH  and x<xFlipH+FlipHor.Width        then Map.FlipH() 
+		if     Map.hoverx!=0                           and Map.hovery!=0                               then Map.Pop(Map.hoverx,Map.hovery)
+		elseif y>yRot  and y<yRot+RotClock.Height      and x>xRotCW  and x<xRotCW+RotClock.Width       then Map.RotateR()
+		elseif y>yRot  and y<yRot+RotCountClock.Height and x>xRotCCW and x<xRotCCW+RotCountClock.Width then Map.RotateL() 
+		elseif y>yFlip and y<yFlip+FlipHor.Height      and x>xFlipH  and x<xFlipH+FlipHor.Width        then Map.FlipH() 
 		elseif y>yFlip and y<yFlip+FlipVer.Height      and x>xFlipV  and x<xFlipV+FlipVer.Width        then Map.FlipV()   end
 	end
 end
+
 
 
 
