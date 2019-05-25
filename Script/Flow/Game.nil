@@ -24,8 +24,6 @@
 // Version: 19.05.25
 // End License Information
 
-
-
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -56,6 +54,7 @@ var Game
 
 bool intutor
 var ImgBubble
+var ImgTube
 var RotClock
 var RotCountClock
 var FlipHor
@@ -531,7 +530,8 @@ global void BUB_Load()
 	if (not SuperGlobal.Map) or SuperGlobal.Map=="" or SuperGlobal.Map=="nil"
 		Map.Load(Game.Level)
 	end
-	ImgBubble = LoadImage("GFX/Levels/Bubbles/Bubble.png")
+	ImgBubble     = LoadImage("GFX/Levels/Bubbles/Bubble.png")
+	ImgTube       = LoadImage("GFX/Game/Tube.png")
 	RotClock      = LoadImage("GFX/Game/RotateClockwise.png")
 	RotCountClock = LoadImage("GFX/Game/RotateCounterClockwise.png")
 	FlipHor       = LoadImage("GFX/Game/HFlip.png")
