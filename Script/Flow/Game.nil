@@ -21,10 +21,8 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.05.24
+// Version: 19.05.25
 // End License Information
-
-
 
 
 #use 'libs/strings'
@@ -43,6 +41,20 @@
 #macro FieldX 20
 #macro FieldY 5
 
+#macro xRotCW 500
+#macro xRotCCW 550
+#macro yRot 50
+
+#macro xFlipH 500
+#macro xFlipV 550
+#macro yFlip 150
+
+bool intutor
+var ImgBubble
+var RotClock
+var RotCountClock
+var FlipHor
+var FlipVer
 var IGFont
 int px_SZ 
 IGFont = LoadImageFont("Fonts/CaviarDreams.20.jfbf")
@@ -214,6 +226,98 @@ class Map
 		end
 	end
 	
+	static void DrawReal(int idx)
+		var obj
+		obj = Map.Level[idx]
+		if obj.bubble
+			SetColor(BubCol[obj.bubcol]["R"],BubCol[obj.bubcol]["G"],BubCol[obj.bubcol]["B"])
+			ImgBubble.Draw(obj.x,obj.y)
+		end
+	end
+	
+	static void Draw(int x, int y, dontmove)
+		int idx
+		idx = Map.C2Real(x,y)
+		if not dontmove
+			int cx
+			int cy
+			var obj
+			cx = FieldX + ((x-1)*TileSize)
+			cy = FieldY + ((y-1)*TileSize)
+			obj = Map.Level[idx]
+			if (obj.x<cx) then obj.x = obj.x + 2 end
+			if (obj.x>cx) then obj.x = obj.x - 2 end
+			if (obj.y<cy) then obj.y = obj.y + 2 end
+			if (obj.y>cy) then obj.y = obj.y - 2 end
+		end
+		Map.DrawReal(idx)
+	end
+	
+	static void DrawAll(dontmove)
+		for y=1,FieldSize
+			for x=1,FieldSize
+				Map.Draw(x,y,dontmove)
+				
+			end
+		end
+	end
+	
+	static void RotateR()
+		table tempfield
+		for ax=1,FieldSize
+			for ay=1, FieldSize
+				int ridx
+				int tidx
+				ridx = Map.C2Real(ax,ay)
+				tidx = Map.C2Real((FieldSize-ay) + 1,ax )
+				tempfield[tidx]=Map.Level[ridx]
+			end
+		end
+		Map.Level = tempfield
+	end 
+	
+	static void RotateL()
+		table tempfield
+		for ax=1,FieldSize
+			for ay=1, FieldSize
+				int ridx
+				int tidx
+				ridx = Map.C2Real(ax,ay)
+				tidx = Map.C2Real(ay,(FieldSize-ax) + 1 )
+				tempfield[tidx]=Map.Level[ridx]
+			end
+		end
+		Map.Level = tempfield
+	end 
+
+	static void FlipH()
+		table tempfield
+		for ax=1,FieldSize
+			for ay=1, FieldSize
+				int ridx
+				int tidx
+				ridx = Map.C2Real(ax,ay)
+				tidx = Map.C2Real((FieldSize-ax) + 1,ay)
+				tempfield[tidx]=Map.Level[ridx]
+			end
+		end
+		Map.Level = tempfield
+	end 
+	
+	static void FlipV()
+		table tempfield
+		for ax=1,FieldSize
+			for ay=1, FieldSize
+				int ridx
+				int tidx
+				ridx = Map.C2Real(ax,ay)
+				tidx = Map.C2Real(ax, (FieldSize-ay) + 1 )
+				tempfield[tidx]=Map.Level[ridx]
+			end
+		end
+		Map.Level = tempfield
+	end 
+	
 end
 
 class TGame
@@ -341,6 +445,11 @@ global void BUB_Load()
 	if (not SuperGlobal.Map) or SuperGlobal.Map=="" or SuperGlobal.Map=="nil"
 		Map.Load(Game.Level)
 	end
+	ImgBubble = LoadImage("GFX/Levels/Bubbles/Bubble.png")
+	RotClock      = LoadImage("GFX/Game/RotateClockwise.png")
+	RotCountClock = LoadImage("GFX/Game/RotateCounterClockwise.png")
+	FlipHor       = LoadImage("GFX/Game/HFlip.png")
+	FlipVer       = LoadImage("GFX/Game/VFlip.png")
 end
 
 global void BUB_Draw()
@@ -358,6 +467,19 @@ global void BUB_Draw()
 	SScore.Draw(5)
 	SLevel.Draw(75)
 	
+	// Draw level
+	Map.DrawAll()
+	
+	// Rotation buttons
+	Color(255,255,255)
+	RotClock.Draw(xRotCW,yRot)
+	RotCountClock.Draw(xRotCCW,yRot)
+	
+	// Flip buttons
+	Color(255,255,255)
+	FlipHor.Draw(xFlipH,yFlip)
+	FlipVer.Draw(xFlipV,yFlip)
+	
 	// Mascot
 	if StateExists("MASCOT")
 		DrawMascot()
@@ -373,6 +495,19 @@ global void BUB_KeyPressed(string name,int code)
 		return
 	end
 end
+
+global void BUB_MousePressed(string button, int x, int y)
+	if button!="Left" then return end
+	if intutor
+		// Comes later!
+	else
+		if     y>yRot  and y<yRot+RotClock.Height      and x>xRotCW  and x<xRotCW+RotClock.Width       then Map.RotateR()
+		elseif y>yRot  and y<yRot+RotCountClock.Height and x>xRotCCW and x<xRotCCW+RotCountClock.Width then Map.RotateL() end
+		if     y>yFlip and y<yFlip+FlipHor.Height      and x>xFlipH  and x<xFlipH+FlipHor.Width        then Map.FlipH() 
+		elseif y>yFlip and y<yFlip+FlipVer.Height      and x>xFlipV  and x<xFlipV+FlipVer.Width        then Map.FlipV()   end
+	end
+end
+
 
 
 
