@@ -37,8 +37,12 @@
 
 #macro TileSize 32
 #macro FieldSize 14
-#macro FieldX 20
+#macro FieldX 40
 #macro FieldY 5
+
+#macro TubeY 5
+#macro TubeTimeX 5
+#macro TubeFillX 22
 
 #macro xRotCW 500
 #macro xRotCCW 550
@@ -566,6 +570,11 @@ global void BUB_Draw()
 	FlipHor.Draw(xFlipH,yFlip)
 	FlipVer.Draw(xFlipV,yFlip)
 	
+	// Tubes
+	ImgTube.Draw(TubeTimeX,TubeY)
+	if Map.Data.FillReq>0 
+		ImgTube.Draw(TubeFillX,TubeY)
+	end
 	// Mascot
 	if StateExists("MASCOT")
 		DrawMascot()
