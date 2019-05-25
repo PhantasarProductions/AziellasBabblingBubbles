@@ -49,6 +49,8 @@
 #macro xFlipV 550
 #macro yFlip 150
 
+#accept Game
+
 bool intutor
 var ImgBubble
 var RotClock
@@ -91,6 +93,7 @@ class Map
 	int x
 	int y
 	int tiles
+	bool popping
 	
 	static var Data
 
@@ -226,6 +229,21 @@ class Map
 		end
 	end
 	
+	static void GenerateBubble(int x, int y)
+		var obj
+		obj = Map.NEW(x,y)
+		obj.x = FieldX + ((x-1)*32)
+		obj.bubble=true
+		obj.bubcol=math.random(1,Map.Data.MaxColor)
+		for iy=1,FieldSize
+			var testobj
+			testobj = Map.Level[Map.C2Real(x,iy)]
+			if iy!=y and obj.y>=testobj.y
+				obj.y=testobj.y-64
+			end
+		end
+	end
+	
 	static void DrawReal(int idx)
 		var obj
 		obj = Map.Level[idx]
@@ -245,10 +263,21 @@ class Map
 			cx = FieldX + ((x-1)*TileSize)
 			cy = FieldY + ((y-1)*TileSize)
 			obj = Map.Level[idx]
-			if (obj.x<cx) then obj.x = obj.x + 2 end
-			if (obj.x>cx) then obj.x = obj.x - 2 end
-			if (obj.y<cy) then obj.y = obj.y + 2 end
-			if (obj.y>cy) then obj.y = obj.y - 2 end
+			if not obj
+				if y==1 
+					Map.GenerateBubble(x,y)
+				else
+					int idxabove
+					idxabove = Map.C2Real(x,y-1)
+					Map.Level[idx] = Map.Level[idxabove]
+					Map.Level[idxabove] = nil // GOODBYE!!
+				end
+			else
+				if (obj.x<cx) then obj.x = obj.x + 2 end
+				if (obj.x>cx) then obj.x = obj.x - 2 end
+				if (obj.y<cy) then obj.y = obj.y + 2 end
+				if (obj.y>cy) then obj.y = obj.y - 2 end
+			end
 		end
 		Map.DrawReal(idx)
 	end
@@ -317,6 +346,32 @@ class Map
 		end
 		Map.Level = tempfield
 	end 
+	
+	static void Pop(int x, int y)
+		int popped
+		table q
+		q[1]=1
+		q[2]=-1
+		void minipop(int x, int y)			
+			int a
+			a = Map.Level[Map.C2Real(x,y)]
+			a.popping=true
+			for i in each(q)
+				a = Map.Level[Map.C2Real(x+i,y)];  if a.bubble and (not a.popping) then minipop(x+i,y) end
+				a = Map.Level[Map.C2Real(x,y+i)];  if a.bubble and (not a.popping) then minipop(x,y+i) end
+			end
+			popped = popped + 1			
+		end
+		for i=1,FieldSize*FieldSize do
+			var obj
+			obj=Map.Table[i]
+			if obj and obj.popping then
+				Map.Table[i]=nil // Popped!
+			end
+		end
+		Game.Score = Game.Score + (popped*popped)
+		CSayF("Player popped %5d bubbles!",popped)
+	end
 	
 end
 
