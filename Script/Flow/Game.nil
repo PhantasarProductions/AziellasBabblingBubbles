@@ -43,6 +43,8 @@
 #macro TubeY 5
 #macro TubeTimeX 5
 #macro TubeFillX 22
+#macro TubeW 15
+#macro TubeH 200
 
 #macro xRotCW 500
 #macro xRotCCW 550
@@ -100,6 +102,8 @@ class _MapData
 	int MaxColor
 	int MaxTime
 	int FillReq
+	
+	int Filled = 0
 	void CONSTRUCTOR()
 		CSay("MapData created")
 	end
@@ -397,6 +401,7 @@ class Map
 		end
 		obj=Map.Level[Map.C2Real(x,y)]
 		minipop(x,y,obj.bubcol)
+		if popped<3 then return end
 		for i=1,FieldSize*FieldSize do
 			var obj
 			obj=Map.Level[i]
@@ -404,7 +409,10 @@ class Map
 				Map.Level[i]=nil // Popped!
 			end
 		end
-		Game.Score = Game.Score + (popped*popped)
+		Game.Score = Game.Score + math.ceil(popped*(popped/2.5))
+		if Map.Data.FillReq>0
+			Map.Data.Filled = Map.Data.Filled + (popped*popped)
+		end
 		CSayF("Player popped %5d bubbles!",popped)
 	end
 	
@@ -573,8 +581,19 @@ global void BUB_Draw()
 	// Tubes
 	ImgTube.Draw(TubeTimeX,TubeY)
 	if Map.Data.FillReq>0 
+		if Map.Data.Filled>Map.Data.FillReq 
+			Map.Data.Filled=Map.Data.FillReq
+		end
+		int n
+		n = math.floor((Map.Data.Filled/Map.Data.FillReq)*TubeH)
+		SetColor(180,0,255)
+		if n>0
+			Rect(TubeFillX, (TubeY + TubeH) - n,TubeW,n)
+		end
+		SetColor(255,255,255)
 		ImgTube.Draw(TubeFillX,TubeY)
 	end
+	
 	// Mascot
 	if StateExists("MASCOT")
 		DrawMascot()
