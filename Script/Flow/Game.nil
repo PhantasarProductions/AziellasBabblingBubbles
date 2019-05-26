@@ -86,6 +86,13 @@ assert = var(bewering, foutmelding)
 	if not bewering then error(foutmelding) end
 	return bewering
 end
+// NIL does not yet understand '...', I need to properly work that one out!
+#pure
+function errorf(fmt,...) 
+	error(sprintf(fmt,...))
+end
+#endpure
+#accept errorf
 
 table BubCol
 class TBubCol
@@ -723,7 +730,7 @@ global void BUB_MousePressed(string button, int x, int y)
 		elseif y>yFlip and y<yFlip+FlipHor.Height      and x>xFlipH  and x<xFlipH+FlipHor.Width        then Map.FlipH() 
 		elseif y>yFlip and y<yFlip+FlipVer.Height      and x>xFlipV  and x<xFlipV+FlipVer.Width        then Map.FlipV()   end
 		if LevelComplete()
-			CompletionCD = 1250
+			CompletionCD = 625
 		end
 	end
 end
