@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.05.25
+// Version: 19.05.26
 // End License Information
+
 
 #use 'libs/strings'
 #use 'libs/linkedlist'
@@ -61,6 +62,7 @@ var Game
 bool intutor
 var ImgBubble
 var ImgTube
+var ImgLevelComplete
 var RotClock
 var RotCountClock
 var FlipHor
@@ -528,6 +530,40 @@ var SLevel
 SScore = TScoreShow.NEW("Score","Score")
 SLevel = TScoreShow.NEW("Level","Level")
 
+// Random Tune
+void RandomTune()
+end
+
+
+// Level completion checks
+var CompletionCD
+var LevelCompletionFunctions
+LevelCompletionFunctions = TLinkedList.NEW()
+do
+	bool CheckFilledUp()
+		return Map.Data.FillReq>0 and Map.Data.FillReq<=Map.Data.Filled
+	end
+	bool AllTilesBroken()
+		return true // The true code comes later!
+	end
+	bool GirlHome()
+		return true // The true code comes later!
+	end
+	
+	LevelCompletionFunctions.AddLast(CheckFilledUp)
+	LevelCompletionFunctions.AddLast(AllTilesBroken)
+	LevelCompletionFunctions.AddLast(GirlHome)
+end
+
+bool LevelComplete()
+	bool ret = true
+	for chk in LevelCompletionFunctions.Each
+		ret = ret and chk()
+	end
+	return ret
+end
+
+// Callback functions
 global void BUB_Load()
 	px_SZ = FieldSize * TileSize
 	TBubCol.NEW(255,0,0)
@@ -542,12 +578,14 @@ global void BUB_Load()
 	if (not SuperGlobal.Map) or SuperGlobal.Map=="" or SuperGlobal.Map=="nil"
 		Map.Load(Game.Level)
 	end
-	ImgBubble     = LoadImage("GFX/Levels/Bubbles/Bubble.png")
-	ImgTube       = LoadImage("GFX/Game/Tube.png")
-	RotClock      = LoadImage("GFX/Game/RotateClockwise.png")
-	RotCountClock = LoadImage("GFX/Game/RotateCounterClockwise.png")
-	FlipHor       = LoadImage("GFX/Game/HFlip.png")
-	FlipVer       = LoadImage("GFX/Game/VFlip.png")
+	ImgLevelComplete = LoadImage("GFX/General/LevelComplete.png")
+	ImgBubble        = LoadImage("GFX/Levels/Bubbles/Bubble.png")
+	ImgTube          = LoadImage("GFX/Game/Tube.png")
+	RotClock         = LoadImage("GFX/Game/RotateClockwise.png")
+	RotCountClock    = LoadImage("GFX/Game/RotateCounterClockwise.png")
+	FlipHor          = LoadImage("GFX/Game/HFlip.png")
+	FlipVer          = LoadImage("GFX/Game/VFlip.png")
+	RandomTune()
 end
 
 global void BUB_Draw()
@@ -599,8 +637,27 @@ global void BUB_Draw()
 		DrawMascot()
 	end
 	
+	// Complete
+	if CompletionCD
+		ImgLevelComplete.Draw((Screen.Width/2)-(ImgLevelComplete.Width/2),(Screen.Height/2)-(ImgLevelComplete.Height/2))
+		CompletionCD = CompletionCD - 1
+	end
+	
 	// Mouse
 	ShowMouse()
+end
+
+global void BUB_Update()
+	if CompletionCD
+		if CompletionCD<=0
+			Game.Level = Game.Level + 1
+			Map.Load(Game.Level)
+			if Game.Level%5==1
+				RandomTune()
+			end
+			CompletionCD=nil // And reset for the next map!
+		end
+	end
 end
 
 global void BUB_KeyPressed(string name,int code)
@@ -614,14 +671,20 @@ global void BUB_MousePressed(string button, int x, int y)
 	if button!="Left" then return end
 	if intutor
 		// Comes later!
+	elseif CompletionCD
+		return
 	else
 		if     Map.hoverx!=0                           and Map.hovery!=0                               then Map.Pop(Map.hoverx,Map.hovery)
 		elseif y>yRot  and y<yRot+RotClock.Height      and x>xRotCW  and x<xRotCW+RotClock.Width       then Map.RotateR()
 		elseif y>yRot  and y<yRot+RotCountClock.Height and x>xRotCCW and x<xRotCCW+RotCountClock.Width then Map.RotateL() 
 		elseif y>yFlip and y<yFlip+FlipHor.Height      and x>xFlipH  and x<xFlipH+FlipHor.Width        then Map.FlipH() 
 		elseif y>yFlip and y<yFlip+FlipVer.Height      and x>xFlipV  and x<xFlipV+FlipVer.Width        then Map.FlipV()   end
+		if LevelComplete()
+			CompletionCD = 1250
+		end
 	end
 end
+
 
 
 
