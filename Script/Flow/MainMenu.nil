@@ -176,6 +176,11 @@ global void BUB_Draw()
 		MItem.TextCaption.Draw(m,MItem.y+15,2,2)
 		Color(255,255,255)
 	end
+	Color(0,0,0)
+	GraphColor.Alpha=150
+	Rect(m-(Copyright.Width/2),Screen.Height-27,Copyright.Width,27)
+	Color(255,255,255)
+	GraphColor.Alpha=255
 	Copyright.Draw(m,Screen.Height-27,2)
 	if StateExists("MASCOT")
 		DrawMascot()
