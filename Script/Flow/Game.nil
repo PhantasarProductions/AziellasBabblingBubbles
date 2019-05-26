@@ -65,6 +65,7 @@ var ImgBubble
 var ImgTube
 var ImgLevelComplete
 var ImgJokerHat
+var ImgTile
 var RotClock
 var RotCountClock
 var FlipHor
@@ -128,7 +129,6 @@ class Map
 	int cory
 	int x
 	int y
-	int tiles
 	bool popping
 	string nonbubble
 	
@@ -153,6 +153,7 @@ class Map
 
 	
 	static table Level
+	static table Tiles
 	static int C2Real(int x, int y)
 		assert(x>=1 and x<=FieldSize,sprintf("Objects.C2REAL(%d,%d): X-coordinate out of bounds! Must be a number from 1-FieldSize",x,y))
 		assert(y>=1 and y<=FieldSize,sprintf("Objects.C2REAL(%d,%d): y-coordinate out of bounds! Must be a number from 1-FieldSize",x,y))
@@ -197,6 +198,7 @@ class Map
 		var lines
 		var data
 		var level
+		var tiles
 		file = Trim(sprintf("Data/Levels/%03d",levelnumber))
 		CSayF("Checking: \"%s\"",file)
 		assert(JCR_EntryExists(file),sprintf("Level #%d does not appear to exist!",levelnumber))
@@ -230,6 +232,19 @@ class Map
 								data[p[1]] = p[2]["upper"](p[2])=="YES" 
 							default
 								data[p[1]] = tonumber(p[2])
+						end
+					case "tiles"
+						ty=ty+1
+						if ty<=14
+							assert(#line>=14,"Tile line too short!")
+							for tx = 1 , 14
+								string ch
+								int rp
+								rp = Map.C2Real(tx,ty)
+								ch = mid(line,tx,1)
+								Map.Tiles[rp]=tonumber(ch) or 0
+								//CSayF("Tile (%d,%d); ch=%s; tonum=%d; Position: %d",tx,ty,ch,tonumber(ch) or 0,rp)
+							end
 						end
 					case "level"
 						assert(#line>=14,sprintf("Level line #%d too short! At 14 characters required!",ln))
@@ -318,6 +333,18 @@ class Map
 	static void Draw(int x, int y, dontmove)
 		int idx
 		idx = Map.C2Real(x,y)
+		if Map.Tiles[idx] and Map.Tiles[idx]>0
+			int tr
+			int tg
+			int tb
+			int tc
+			tc = Map.Tiles[idx]
+			tr = (240+(tc*10))
+			tg = (100+(tc*15))
+			tb =       tc*25
+			SetColor(tr,tg,tb)
+			ImgTile.Draw(FieldX + ((x-1)*TileSize),FieldY + ((y-1)*TileSize))
+		end
 		if not dontmove
 			int cx
 			int cy
@@ -459,6 +486,17 @@ class TGame
 	readonly table tools
 	private table ttools
 	private table mtools
+
+	get int TileCount
+		int ret
+		for y=1,FieldSize
+			for x=1,FieldSize
+				ret = ret + (Map.Tiles[Map.C2Real(x,y)] or 0)
+			end
+		end
+		return ret
+	end
+
 	
 	void CONSTRUCTOR()
 		table tool2number
@@ -560,8 +598,10 @@ end
 
 var SScore
 var SLevel
+var STiles
 SScore = TScoreShow.NEW("Score","Score")
 SLevel = TScoreShow.NEW("Level","Level")
+STiles = TScoreShow.NEW("Tiles left","TileCount")
 
 // Random Tunes
 void GetRandomTunes()
@@ -589,10 +629,10 @@ var LevelCompletionFunctions
 LevelCompletionFunctions = TLinkedList.NEW()
 do
 	bool CheckFilledUp()
-		return Map.Data.FillReq>0 and Map.Data.FillReq<=Map.Data.Filled
+		return Map.Data.FillReq<=0 or Map.Data.FillReq<=Map.Data.Filled
 	end
 	bool AllTilesBroken()
-		return true // The true code comes later!
+		return Game.TileCount<=0
 	end
 	bool GirlHome()
 		return true // The true code comes later!
@@ -629,6 +669,7 @@ global void BUB_Load()
 	ImgLevelComplete = LoadImage("GFX/General/LevelComplete.png")
 	ImgBubble        = LoadImage("GFX/Levels/Bubbles/Bubble.png")
 	ImgJokerHat      = LoadImage("GFX/Levels/Xtra/Joker Hat.png")
+	ImgTile          = LoadImage("GFX/Levels/Tiles/Tile.png")
 	ImgTube          = LoadImage("GFX/Game/Tube.png")
 	RotClock         = LoadImage("GFX/Game/RotateClockwise.png")
 	RotCountClock    = LoadImage("GFX/Game/RotateCounterClockwise.png")
@@ -652,6 +693,7 @@ global void BUB_Draw()
 	// Score screen
 	SScore.Draw(5)
 	SLevel.Draw(75)
+	STiles.Draw(145)
 	
 	// Draw level
 	Map.DrawAll()
