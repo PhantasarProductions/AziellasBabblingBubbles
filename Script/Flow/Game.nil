@@ -63,6 +63,7 @@ bool intutor
 var ImgBubble
 var ImgTube
 var ImgLevelComplete
+var ImgJokerHat
 var RotClock
 var RotCountClock
 var FlipHor
@@ -104,6 +105,7 @@ class _MapData
 	int MaxColor
 	int MaxTime
 	int FillReq
+	int Joker
 	
 	int Filled = 0
 	void CONSTRUCTOR()
@@ -120,6 +122,7 @@ class Map
 	int y
 	int tiles
 	bool popping
+	string nonbubble
 	
 	static int hoverx
 	static int hovery
@@ -241,6 +244,12 @@ class Map
 										mp=level[tp]
 										mp.bubble=true
 										mp.bubcol=tonumber(ch) or 0
+									case "J"
+										mp=level[tp]
+										mp.bubble=false
+										mp.nonbubble="Joker"
+										mp.x = math.random(0,Screen.Width)
+										mp.y = math.random(0,Screen.Height)
 									case "R"
 										mp=level[tp]
 										mp.bubble=true
@@ -261,6 +270,13 @@ class Map
 		var obj
 		obj = Map.NEW(x,y)
 		obj.x = FieldX + ((x-1)*32)
+		if Map.Data.Joker>0 and math.random(1,Map.Data.Joker)==1
+			obj.x=math.random(-8000,8000)
+			obj.y=math.random(-8000,8000)
+			obj.bubble=false
+			obj.nonbubble="Joker"
+			return
+		end
 		obj.bubble=true
 		obj.bubcol=math.random(1,Map.Data.MaxColor)
 		for iy=1,FieldSize
@@ -279,6 +295,15 @@ class Map
 		if obj.bubble
 			SetColor(BubCol[obj.bubcol]["R"],BubCol[obj.bubcol]["G"],BubCol[obj.bubcol]["B"])
 			ImgBubble.Draw(obj.x,obj.y)
+		end
+		if obj.nonbubble!=""
+			Color(255,255,255)
+			switch obj.nonbubble:upper()
+				case "JOKER"
+					ImgJokerHat.Draw(obj.x,obj.y)
+				default
+					error(sprintf("I don't know non-bubble type: %s!",obj.nonbubble))
+			end
 		end
 	end
 	
@@ -396,8 +421,8 @@ class Map
 			if not a then return end
 			a.popping=true
 			for i in each(q)
-				if x+i>=1 and x+i<=FieldSize then a = Map.Level[Map.C2Real(x+i,y)];  if a.bubble and (not a.popping) and a.bubcol==color then minipop(x+i,y,color) end end
-				if y+i>=1 and y+i<=FieldSize then a = Map.Level[Map.C2Real(x,y+i)];  if a.bubble and (not a.popping) and a.bubcol==color then minipop(x,y+i,color) end end
+				if x+i>=1 and x+i<=FieldSize then a = Map.Level[Map.C2Real(x+i,y)];  if (a.bubble and (not a.popping) and a.bubcol==color) or a.nonbubble:upper()=="JOKER" then minipop(x+i,y,color) end end
+				if y+i>=1 and y+i<=FieldSize then a = Map.Level[Map.C2Real(x,y+i)];  if (a.bubble and (not a.popping) and a.bubcol==color) or a.nonbubble:upper()=="JOKER" then minipop(x,y+i,color) end end
 			end
 			popped = popped + 1
 		end
@@ -580,6 +605,7 @@ global void BUB_Load()
 	end
 	ImgLevelComplete = LoadImage("GFX/General/LevelComplete.png")
 	ImgBubble        = LoadImage("GFX/Levels/Bubbles/Bubble.png")
+	ImgJokerHat      = LoadImage("GFX/Levels/Xtra/Joker Hat.png")
 	ImgTube          = LoadImage("GFX/Game/Tube.png")
 	RotClock         = LoadImage("GFX/Game/RotateClockwise.png")
 	RotCountClock    = LoadImage("GFX/Game/RotateCounterClockwise.png")
