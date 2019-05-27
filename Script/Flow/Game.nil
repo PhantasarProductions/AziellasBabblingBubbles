@@ -24,8 +24,6 @@
 // Version: 19.05.26
 // End License Information
 
-
-
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -55,6 +53,8 @@
 #macro xFlipH 500
 #macro xFlipV 550
 #macro yFlip 150
+
+#macro DBGMilliToday // IGFont.Draw(MilliToday().." MilliSeconds since midnight",5,5)
 
 // needed later
 var Game
@@ -469,6 +469,9 @@ class Map
 			obj=Map.Level[i]
 			if obj and obj.popping then
 				Map.Level[i]=nil // Popped!
+				if Map.Tiles[i] and Map.Tiles[i]>0 
+					Map.Tiles[i] = Map.Tiles[i] - 1
+				end
 			end
 		end
 		Game.Score = Game.Score + math.ceil(popped*(popped/2.5))
@@ -737,6 +740,9 @@ global void BUB_Draw()
 	
 	// Mouse
 	ShowMouse()
+	
+	// Debug
+	DBGMilliToday
 end
 
 global void BUB_Update()
