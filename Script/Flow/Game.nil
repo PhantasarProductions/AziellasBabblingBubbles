@@ -56,10 +56,11 @@
 
 #macro mvSpeed 4
 
-#macro DBGMilliToday // IGFont.Draw(MilliToday().." MilliSeconds since midnight",5,5)
+#macro DBGMilliToday IGFont.Draw(MilliToday().." MilliSeconds since midnight! Time Left:"..Map.Data.Time.."/"..Map.Data.MaxTime,5,5)
 
 // needed later
 var Game
+int oldtime
 
 table musiclist
 bool intutor
@@ -119,6 +120,7 @@ class _MapData
 	int Joker
 	
 	int Filled = 0
+	int Time
 	void CONSTRUCTOR()
 		CSay("MapData created")
 	end
@@ -289,6 +291,8 @@ class Map
 				end
 			end
 		end
+		Map.Data.Time = Map.Data.MaxTime
+		oldtime=0
 	end
 	
 	static void GenerateBubble(int x, int y)
@@ -714,8 +718,15 @@ global void BUB_Draw()
 	FlipVer.Draw(xFlipV,yFlip)
 	
 	// Tubes
+	do
+		number tbalk
+		SetColor(255,180,0)
+		tbalk = math.floor((Map.Data.Time/Map.Data.MaxTime)*TubeH)
+		Rect(TubeTimeX, (TubeY + TubeH) - tbalk,TubeW,tbalk)
+	end
+	SetColor(255,255,255)
 	ImgTube.Draw(TubeTimeX,TubeY)
-	if Map.Data.FillReq>0 
+	if Map.Data.FillReq>0 		
 		if Map.Data.Filled>Map.Data.FillReq 
 			Map.Data.Filled=Map.Data.FillReq
 		end
@@ -726,7 +737,7 @@ global void BUB_Draw()
 			Rect(TubeFillX, (TubeY + TubeH) - n,TubeW,n)
 		end
 		SetColor(255,255,255)
-		ImgTube.Draw(TubeFillX,TubeY)
+		ImgTube.Draw(TubeFillX,TubeY)		
 	end
 	
 	// Mascot
@@ -747,6 +758,7 @@ global void BUB_Draw()
 	DBGMilliToday
 end
 
+
 global void BUB_Update()
 	if CompletionCD
 		if CompletionCD<=0
@@ -757,7 +769,24 @@ global void BUB_Update()
 			end
 			CompletionCD=nil // And reset for the next map!
 		end
+	else
+		int ctime 
+		ctime= MilliToday()
+		if oldtime!=0
+			int vtime
+			vtime = math.floor((ctime - oldtime) / 10)
+			if vtime>0
+				Map.Data.Time = Map.Data.Time - vtime
+				if Map.Data.Time<0
+					Map.Data.Time=0
+				end
+				oldtime=ctime
+			end
+		else
+			oldtime=ctime
+		end
 	end
+	
 end
 
 global void BUB_KeyPressed(string name,int code)
