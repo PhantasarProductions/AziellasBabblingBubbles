@@ -54,6 +54,8 @@
 #macro xFlipV 550
 #macro yFlip 150
 
+#macro mvSpeed 4
+
 #macro DBGMilliToday // IGFont.Draw(MilliToday().." MilliSeconds since midnight",5,5)
 
 // needed later
@@ -362,10 +364,10 @@ class Map
 					Map.Level[idxabove] = nil // GOODBYE!!
 				end
 			else
-				if (obj.x<cx) then obj.x = obj.x + 2 end
-				if (obj.x>cx) then obj.x = obj.x - 2 end
-				if (obj.y<cy) then obj.y = obj.y + 2 end
-				if (obj.y>cy) then obj.y = obj.y - 2 end
+				if (obj.x<cx) then obj.x = obj.x + mvSpeed end
+				if (obj.x>cx) then obj.x = obj.x - mvSpeed end
+				if (obj.y<cy) then obj.y = obj.y + mvSpeed end
+				if (obj.y>cy) then obj.y = obj.y - mvSpeed end
 				if Mouse.X>cx and Mouse.Y>cy and Mouse.X<cx+TileSize and Mouse.Y<cy+TileSize
 					Map.hoverx = x
 					Map.hovery = y
