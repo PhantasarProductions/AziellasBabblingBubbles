@@ -1,14 +1,12 @@
 [rem]
 Generated file!
 
-Generated: 5/15/2019 10:06:18 AM
-
-[List:Import]
-Scyndi:Projects/Applications/Bubble/Games/Aziella's Babbling Bubbles/Music/Aziella_Music.jcr
+Generated: 5/31/2019 10:16:32 PM
 
 [vars]
 AUTHOR[./SRC/ALLEN R. WALDEN]=Allen R. Walden
 AUTHOR[./SRC/ANGIE DURBIN]=Angie Durbin
+AUTHOR[./SRC/CCBYNCSA - ALEXANDER]=Alexander
 AUTHOR[./SRC/FANTASYSTOCK]=fantasystock
 AUTHOR[./SRC/FLAMINGTEXT.COM]=Jeroen P. Broks
 AUTHOR[./SRC/GR-SITES]=GR-Sites
@@ -31,6 +29,7 @@ JCRCOMPRESS=lzma
 JCRMERGE=YES
 NOTES[./SRC/ALLEN R. WALDEN]=Downloaded from DaFont said to be 100% free
 NOTES[./SRC/ANGIE DURBIN]=Donwloaded from DaFont and said to be 100% free
+NOTES[./SRC/CCBYNCSA - ALEXANDER]=Creative Commons - By Attribution - NonCommercial - ShareAlike -- http://www.orangefreesounds.com/pop-sound-effect/
 NOTES[./SRC/FANTASYSTOCK]=Please read the terms of usage before extracting and using! >> https://fantasystock.deviantart.com/journal/7569297/
 NOTES[./SRC/FLAMINGTEXT.COM]=Created with CoolText
 NOTES[./SRC/GR-SITES]=www.grsites.com
@@ -50,6 +49,9 @@ TITLE=Aziella's Babbling Bubbles
 WEBSITE=---
 
 
+[List:IMPORT]
+Scyndi:Projects/Applications/Bubble/Games/Aziella's Babbling Bubbles/Music/Aziella_Music.jcr
+
 [List:INPUTDIRS]
 ./src/Tricky
 ./src/TrickyPrivate
@@ -65,6 +67,7 @@ WEBSITE=---
 ./src/William Boyd
 ./src/fantasystock
 ./src/GR-Sites
+./src/CCBYNCSA - Alexander
 
 [List:IGNOREDIRS]
 
