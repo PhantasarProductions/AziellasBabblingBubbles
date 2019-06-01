@@ -26,6 +26,7 @@
 
 
 
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -58,7 +59,7 @@
 
 #macro mvSpeed 4
 
-#macro DBGMilliToday IGFont.Draw(MilliToday().." MilliSeconds since midnight! Time Left:"..Map.Data.Time.."/"..Map.Data.MaxTime,5,5)
+#macro DBGMilliToday // IGFont.Draw(MilliToday().." MilliSeconds since midnight! Time Left:"..Map.Data.Time.."/"..Map.Data.MaxTime,5,5)
 
 // needed later
 var Game
@@ -610,6 +611,10 @@ class TScoreShow
 end
 
 void MenuPause()
+	if not StateExists("FLOW_PAUSE")
+		LoadFlow("PAUSE","Script/Flow/Pause.nil")
+	end
+	GoToFlow("PAUSE")
 end
 
 void MenuReset()
@@ -870,6 +875,8 @@ global void BUB_MousePressed(string button, int x, int y)
 		// Comes later!
 	elseif CompletionCD
 		return
+	elseif UIButton.Hover
+		UIButton.Hover.CallBack()
 	else
 		if     Map.hoverx!=0                           and Map.hovery!=0                               then Map.Pop(Map.hoverx,Map.hovery)
 		elseif y>yRot  and y<yRot+RotClock.Height      and x>xRotCW  and x<xRotCW+RotClock.Width       then Map.RotateR()
@@ -881,6 +888,7 @@ global void BUB_MousePressed(string button, int x, int y)
 		end
 	end
 end
+
 
 
 

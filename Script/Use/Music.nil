@@ -21,12 +21,11 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.05.21
+// Version: 19.06.01
 // End License Information
 
 
-
-#localuse 'libs/strings'
+// #localuse 'libs/strings' as broodjepoep
 #macro _TitleMusic_ "Music/Title/Odyssey.wav"
 
 class musicbubbles
@@ -37,7 +36,7 @@ class musicbubbles
 	end
 
 	void Start(string file)
-		CSayF("Request to load '%s' received",(file or "<< FILE:NIL >>"))
+		CSay(string.format("Request to load '%s' received",(file or "<< FILE:NIL >>")))
 		if not self.GotMusic() then 
 			CSay("Not present! Request ignored")
 			return 
@@ -50,9 +49,18 @@ class musicbubbles
 		CSay("Contacting music engine")
 		LuaDoString("MUSIC",string.format('StartMusic("%s")',file:upper()))
 	end
+	
+	void Pause()
+		LuaDoString("MUSIC","PauseMusic()")
+	end
+	
+	void Resume()
+		LuaDoString("MUSIC","ResumeMusic()")
+	end
 end
 
 return musicbubbles.NEW()
+
 
 
 
