@@ -11,3 +11,5 @@ Since this is the first big project written with NIL, I don't expect github.com 
 must place my priorities elsewhere.
 
 Information about the game itself, will be posted later!
+
+![](https://i.imgur.com/Qyb74XY.png)
