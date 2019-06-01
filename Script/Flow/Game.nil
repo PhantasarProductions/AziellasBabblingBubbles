@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.05.26
+// Version: 19.06.01
 // End License Information
+
 
 #use 'libs/strings'
 #use 'libs/linkedlist'
@@ -816,6 +817,7 @@ global void BUB_MousePressed(string button, int x, int y)
 		end
 	end
 end
+
 
 
 
