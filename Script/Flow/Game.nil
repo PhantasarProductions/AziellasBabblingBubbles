@@ -64,6 +64,7 @@ int oldtime
 
 table musiclist
 bool intutor
+var AudPop
 var ImgBubble
 var ImgTube
 var ImgLevelComplete
@@ -485,6 +486,7 @@ class Map
 			Map.Data.Filled = Map.Data.Filled + (popped*popped)
 		end
 		CSayF("Player popped %5d bubbles!",popped)
+		AudPop.Play()
 	end
 	
 end
@@ -684,6 +686,7 @@ global void BUB_Load()
 	RotCountClock    = LoadImage("GFX/Game/RotateCounterClockwise.png")
 	FlipHor          = LoadImage("GFX/Game/HFlip.png")
 	FlipVer          = LoadImage("GFX/Game/VFlip.png")
+	AudPop           = LoadAudio("Audio/Game/Pop.wav")
 	GetRandomTunes()
 	RandomTune()
 end
