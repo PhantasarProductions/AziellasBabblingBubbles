@@ -25,6 +25,7 @@
 // End License Information
 
 
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -608,6 +609,65 @@ class TScoreShow
 	end
 end
 
+void MenuPause()
+end
+
+void MenuReset()
+end
+
+// Brings you back to the main menu, in case this doesn't make sense to you ;)
+void MenuMenu()
+end
+
+class UIButton
+	static var List
+	static var Image
+	static var Hover
+	
+	readonly int x
+	readonly int y
+	readonly string Caption
+	readonly var CapText
+	readonly var CallBack
+	
+	void CONSTRUCTOR(int x, int y,string caption, callback)
+		UIButton.List = UIButton.List or TLinkedList.NEW()
+		UIButton.Image = UIButton.Image or LoadImage("GFX/UI/SmallButton.png")
+		self.x = x
+		self.y = y
+		self.Caption = caption
+		self.CapText = IGFont.Text(caption)
+		self.CallBack=callback
+		UIButton.List.AddLast(self)
+		CSayF("Button created \"%s\", at (%d,%d)",caption,x,y)
+	end
+	
+	static void Init()
+		UIButton.NEW(Screen.Width-110,Screen.Height-(35*3),"Pause",MenuPause)
+		UIButton.NEW(Screen.Width-110,Screen.Height-(35*2),"Reset",MenuPause)
+		UIButton.NEW(Screen.Width-110,Screen.Height-(35*1),"Menu",MenuPause)
+	end
+	
+	void DrawMe(bool donotcheckhover)
+		SetColor(255,255,255)
+		self.Image.Draw(self.x,self.y)
+		self.CapText.Draw(self.x+50,self.y+6,2,2)
+		if donotcheckhover then
+			return
+		end
+		if Mouse.X>self.x and Mouse.X<self.x+100 and Mouse.Y>self.y and Mouse.Y<self.y+32
+			UIButton.Hover = self
+		end
+	end
+	
+	static void DrawAll()
+		UIButton.Hover = nil // reset!
+		for butt in UIButton.List.Each
+			butt.DrawMe(false)
+		end
+	end
+end
+
 var SScore
 var SLevel
 var STiles
@@ -688,6 +748,7 @@ global void BUB_Load()
 	FlipHor          = LoadImage("GFX/Game/HFlip.png")
 	FlipVer          = LoadImage("GFX/Game/VFlip.png")
 	AudPop           = LoadAudio("Audio/Game/Pop.wav")
+	UIButton.Init()
 	GetRandomTunes()
 	RandomTune()
 end
@@ -720,6 +781,9 @@ global void BUB_Draw()
 	Color(255,255,255)
 	FlipHor.Draw(xFlipH,yFlip)
 	FlipVer.Draw(xFlipV,yFlip)
+	
+	// Menu buttons
+	UIButton.DrawAll()
 	
 	// Tubes
 	do
@@ -817,6 +881,7 @@ global void BUB_MousePressed(string button, int x, int y)
 		end
 	end
 end
+
 
 
 
