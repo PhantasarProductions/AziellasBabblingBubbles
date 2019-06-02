@@ -728,6 +728,21 @@ bool LevelComplete()
 	return ret
 end
 
+// Update 
+void UpdateData()
+	SuperGlobal.MapData = Map.Data[".dump"]
+	SuperGlobal.GameData = Game[".dump"]
+	for i=0,FieldSize*FieldSize
+		SuperGlobal[sprintf("OBJ%d")] = "";
+		SuperGlobal[sprintf("TIL%d")] = "0";
+	for i,c in pairs(Map.Level)
+		SuperGlobal[sprintf("OBJ%d",i)] = c[".dump"]
+	end
+	for i,c in pairs(Map.Tiles)
+		SuperGlobal[sprintf("TIL%d",i)] = ""..c
+	end
+end
+
 // Callback functions
 global void BUB_Load()
 	px_SZ = FieldSize * TileSize
