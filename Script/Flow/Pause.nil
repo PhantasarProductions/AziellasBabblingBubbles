@@ -1,0 +1,68 @@
+// License Information:
+// Aziella's Babbling Bubbles
+// Pause Game Screen
+// 
+// 
+// 
+// (c) Jeroen P. Broks, 
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+// Please note that some references to data like pictures or audio, do not automatically
+// fall under this licenses. Mostly this is noted in the respective files.
+// 
+// Version: 19.06.01
+// End License Information
+
+#use 'Script/Use/Aquarium_link'
+#use 'Script/Use/Mascotte'
+#use 'Script/Use/Music'
+#use 'Script/Use/ShowMouse'
+
+var imgPause
+
+global delegate BUB_KeyPressed
+global delegate BUB_MousePressed
+
+int px
+int py
+
+global void BUB_Load()
+	imgPause = LoadImage("GFX/General/Paused.png")
+	px = (Screen.Width /2) - (imgPause.Width /2)
+	py = (Screen.Height/2) - (imgPause.Height/2)
+end
+
+global void BUB_Arrive()
+	Music.Pause()
+end
+
+global void BUB_Draw()
+	// Aquarium
+	DrawAquarium()
+
+	// Show Paused
+	imgPause.Draw(px,py)
+	
+	// Mouse
+	ShowMouse()
+end
+
+void ResumeGame()
+	Music.Resume()
+	GoToFlow("GAME")
+end
+
+BUB_KeyPressed = ResumeGame
+BUB_MousePressed = ResumeGame
+
