@@ -734,13 +734,10 @@ void UpdateData()
 	SuperGlobal.GameData = Game[".dump"]
 	for i=0,FieldSize*FieldSize
 		SuperGlobal[sprintf("OBJ%d")] = "";
-		SuperGlobal[sprintf("TIL%d")] = "0";
 	for i,c in pairs(Map.Level)
 		SuperGlobal[sprintf("OBJ%d",i)] = c[".dump"]
 	end
-	for i,c in pairs(Map.Tiles)
-		SuperGlobal[sprintf("TIL%d",i)] = ""..c
-	end
+	SuperGlobal.Tiles = NIL.LuaSerialize("Map.Tiles",Map.Tiles)
 end
 
 // Callback functions
