@@ -35,12 +35,13 @@ global void LoadUser(string user)
 	SuperGlobal.UserName = user
 end
 
-global void SaveUser(string user)
+global void SaveUser(user)
+	if (not user) or user=="nil" then user=SuperGlobal.UserName end
 	var sav
 	CSayF("Saving user: %s",user)
 	sav = BubSave.StartJCRSave(sprintf("Users/%s",user))
 	sav.SuperGlobals = SuperGlobal
-	sav.Close=true	
+	sav.Close=true
 end
 
 

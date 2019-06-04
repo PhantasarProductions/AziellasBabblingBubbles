@@ -759,6 +759,7 @@ void UpdateData()
 		SuperGlobal[sprintf("OBJ%d",i)] = c[".dump"]
 	end
 	SuperGlobal.Tiles = NIL.LuaSerialize("Map.Tiles",Map.Tiles)
+	SaveUser()
 end
 
 // Callback functions

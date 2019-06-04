@@ -43,6 +43,7 @@ global void Bubble_Init()
 	SuperGlobal["#string"]='Config';
 	SuperGlobal["#string"]='InGame';
 	SuperGlobal["#string"]='Map';
+	SuperGlobal["#string"]='Tiles';
 	SuperGlobal.UserName="";
 	SuperGlobal.Config="";
 	SuperGlobal.InGame="";
