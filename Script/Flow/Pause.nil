@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.06.01
+// Version: 19.06.04
 // End License Information
+
 
 #use 'Script/Use/Aquarium_link'
 #use 'Script/Use/Mascotte'
@@ -65,4 +66,5 @@ end
 
 BUB_KeyPressed = ResumeGame
 BUB_MousePressed = ResumeGame
+
 
