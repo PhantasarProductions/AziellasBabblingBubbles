@@ -24,11 +24,6 @@
 // Version: 19.06.04
 // End License Information
 
-
-
-
-
-
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -74,6 +69,7 @@ var ImgBubble
 var ImgTube
 var ImgLevelComplete
 var ImgJokerHat
+var ImgCherry
 var ImgTile
 var RotClock
 var RotCountClock
@@ -142,6 +138,7 @@ class Map
 	int y
 	bool popping
 	string nonbubble
+	string plusbubble
 	
 	static int hoverx
 	static int hovery
@@ -284,10 +281,14 @@ class Map
 										mp.nonbubble="Joker"
 										mp.x = math.random(0,Screen.Width)
 										mp.y = math.random(0,Screen.Height)
-									case "R"
+									case "R" "C"
 										mp=level[tp]
 										mp.bubble=true
 										mp.bubcol=math.random(1,Map.Data.MaxColor)
+										switch ch
+											case "C"
+												mp.plusbubble="Cherry"
+										end
 									default
 										error("Unknown level tag >> "..ch)
 								end
@@ -301,7 +302,7 @@ class Map
 		Map.Data.Time = Map.Data.MaxTime
 		oldtime=0
 	end
-	
+
 	static void GenerateBubble(int x, int y)
 		var obj
 		obj = Map.NEW(x,y)
@@ -312,6 +313,9 @@ class Map
 			obj.bubble=false
 			obj.nonbubble="Joker"
 			return
+		end
+		if Map.Data.Cherry>0 and math.random(1,Map.Data.Cherry)==1 and obj.plusbubble==""
+			obj.plusbubble="Cherry"
 		end
 		obj.bubble=true
 		obj.bubcol=math.random(1,Map.Data.MaxColor)
@@ -324,7 +328,7 @@ class Map
 		end
 		Map.Level[Map.C2Real(x,y)]=obj
 	end
-	
+
 	static void DrawReal(int idx)
 		var obj
 		obj = Map.Level[idx]
@@ -339,6 +343,15 @@ class Map
 					ImgJokerHat.Draw(obj.x,obj.y)
 				default
 					error(sprintf("I don't know non-bubble type: %s!",obj.nonbubble))
+			end
+		end
+		if obj.plusbubble!=""
+			Color(255,255,255)
+			switch obj.plusbubble:upper()
+				case "CHERRY"
+					ImgCherry.Draw(obj.x,obj.y)
+				default
+					error(sprintf("I don't know plus-bubble type: %s!",obj.plusbubble))
 			end
 		end
 	end
@@ -467,6 +480,10 @@ class Map
 			var a
 			a = Map.Level[Map.C2Real(x,y)]
 			if not a then return end
+			switch a.plusbubble
+				case "CHERRY"
+					Game.Score = Game.Score + math.rand(1000,5000)
+			end
 			a.popping=true
 			for i in each(q)
 				if x+i>=1 and x+i<=FieldSize then a = Map.Level[Map.C2Real(x+i,y)];  if (a.bubble and (not a.popping) and a.bubcol==color) or a.nonbubble:upper()=="JOKER" then minipop(x+i,y,color) end end
@@ -762,6 +779,7 @@ global void BUB_Load()
 	ImgLevelComplete = LoadImage("GFX/General/LevelComplete.png")
 	ImgBubble        = LoadImage("GFX/Levels/Bubbles/Bubble.png")
 	ImgJokerHat      = LoadImage("GFX/Levels/Xtra/Joker Hat.png")
+	ImgCherry        = LoadImage("GFX/Levels/Xtra/Cherry.png")
 	ImgTile          = LoadImage("GFX/Levels/Tiles/Tile.png")
 	ImgTube          = LoadImage("GFX/Game/Tube.png")
 	RotClock         = LoadImage("GFX/Game/RotateClockwise.png")
@@ -905,6 +923,7 @@ global void BUB_MousePressed(string button, int x, int y)
 		end
 	end
 end
+
 
 
 
