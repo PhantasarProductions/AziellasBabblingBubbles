@@ -28,6 +28,7 @@
 
 
 
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -615,7 +616,7 @@ end
 void MenuPause()
 	if not StateExists("FLOW_PAUSE")
 		LoadFlow("PAUSE","Script/Flow/Pause.nil")
-	end
+	end	
 	GoToFlow("PAUSE")
 end
 
@@ -735,7 +736,8 @@ void UpdateData()
 	SuperGlobal.MapData = Map.Data[".dump"]
 	SuperGlobal.GameData = Game[".dump"]
 	for i=0,FieldSize*FieldSize
-		SuperGlobal[sprintf("OBJ%d")] = "";
+		SuperGlobal[sprintf("OBJ%d",i)] = "";
+	end
 	for i,c in pairs(Map.Level)
 		SuperGlobal[sprintf("OBJ%d",i)] = c[".dump"]
 	end
@@ -890,6 +892,7 @@ global void BUB_MousePressed(string button, int x, int y)
 	elseif CompletionCD
 		return
 	elseif UIButton.Hover
+		UpdateData()
 		UIButton.Hover.CallBack()
 	else
 		if     Map.hoverx!=0                           and Map.hovery!=0                               then Map.Pop(Map.hoverx,Map.hovery)
@@ -902,6 +905,7 @@ global void BUB_MousePressed(string button, int x, int y)
 		end
 	end
 end
+
 
 
 
