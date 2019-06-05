@@ -137,6 +137,11 @@ void GoQuit()
 	Bye()
 end
 
+global void BUB_Arrive()
+	CSayF("Load Music '%s'", _TitleMusic_)
+	Music.Start( _TitleMusic_ )
+end
+
 global void BUB_Load()
 	CSay("Init main menu")
 	CSay("Load logo")
@@ -147,8 +152,6 @@ global void BUB_Load()
 	logoh = logo.Height
 	logomx = logow/2
 	logomy = logoh/2
-	CSayF("Load Music '%s'", _TitleMusic_)
-	Music.Start( _TitleMusic_ )
 	MenuItem.NEW("Play the game",StartGame)
 	MenuItem.NEW("Configuration",GoConfig)
 	MenuItem.NEW("Credits",GoCredits)
