@@ -30,6 +30,8 @@
 
 #use "Script/Use/Users"
 
+#macro FieldSize 14
+
 
 
 global void Bubble_Init()
@@ -37,16 +39,26 @@ global void Bubble_Init()
 	CSay("Let's start")	
 	CSay(string.format("Screen Size %dx%d",ScreenWidth,ScreenHeight))
 	// Set up superglobal
-	CSay("Init SuperGlobal")
+	CSay("Init SuperGlobal!!")
 	SuperGlobal["#strict"]='true';
 	SuperGlobal["#string"]='UserName';
 	SuperGlobal["#string"]='Config';
 	SuperGlobal["#string"]='InGame';
+	SuperGlobal["#string"]='GameData';
 	SuperGlobal["#string"]='Map';
 	SuperGlobal["#string"]='Tiles';
+	SuperGlobal["#string"]='MapData';
+	for i=0,FieldSize*FieldSize 
+		SuperGlobal["#string"]=string.format('OBJ%d',i)
+		SuperGlobal[string.format('OBJ%d',i)]=""
+	end
+	
 	SuperGlobal.UserName="";
 	SuperGlobal.Config="";
 	SuperGlobal.InGame="";
+	SuperGlobal.Map="";
+	SuperGlobal.Tiles="";
+	SuperGlobal.MapData="";
 	
 	// Savegame configuration
 	CSay("Init savegame data")

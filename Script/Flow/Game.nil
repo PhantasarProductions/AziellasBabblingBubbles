@@ -517,9 +517,9 @@ end
 class TGame
 	int Score = 0
 	int Level = 1
-	readonly table tools
-	private table ttools
-	private table mtools
+	//readonly table tools
+	//private table ttools
+	//private table mtools
 
 	get int TileCount
 		int ret
@@ -533,11 +533,14 @@ class TGame
 
 	
 	void CONSTRUCTOR()
+	end
+	void IGNORE()
 		table tool2number
 		table number2tool
+		table mtools
 		tool2number.bomb = 1
 		number2tool[1]="bomb"
-		self.mtools.__index = var(t,k)
+		mtools.__index = var(t,k)
 			switch type(k)
 				case "string"
 					if k:upper()=="EACH"
@@ -559,7 +562,7 @@ class TGame
 					error("GET:I cannot deal with tools indexed with a "..type(k))
 			end
 		end
-		self.mtools.__newindex = int(t,k,v)
+		mtools.__newindex = int(t,k,v)
 			switch type(k)
 				case "string"
 					assert(tool2number[k],"SET:I don't know tool '"..k.."'")
@@ -571,12 +574,12 @@ class TGame
 					error("SET:I cannot deal with tools indexed with a "..type(k))
 			end
 		end
-		setmetatable(self.tools,self.mtools)
+		setmetatable(self.tools,mtools)
 	end
 end
-var Tools
+//var Tools
 Game = TGame.NEW()
-Tools = Game.tools // Quick references, because I am LAZY!
+//Tools = Game.tools // Quick references, because I am LAZY!
 
 class TScoreShow
 	static table nums
@@ -642,6 +645,8 @@ end
 
 // Brings you back to the main menu, in case this doesn't make sense to you ;)
 void MenuMenu()
+	//GoToFlow("MAINMENU")
+	//KillFlow("GAME")
 end
 
 class UIButton
@@ -669,8 +674,8 @@ class UIButton
 	
 	static void Init()
 		UIButton.NEW(Screen.Width-110,Screen.Height-(35*3),"Pause",MenuPause)
-		UIButton.NEW(Screen.Width-110,Screen.Height-(35*2),"Reset",MenuPause)
-		UIButton.NEW(Screen.Width-110,Screen.Height-(35*1),"Menu",MenuPause)
+		UIButton.NEW(Screen.Width-110,Screen.Height-(35*2),"Reset",MenuReset)
+		UIButton.NEW(Screen.Width-110,Screen.Height-(35*1),"Menu" ,MenuMenu)
 	end
 	
 	void DrawMe(bool donotcheckhover)
@@ -774,23 +779,40 @@ global void BUB_Load()
 	TBubCol.NEW(255,180,0)
 	TBubCol.NEW(255,180,180)
 	TBubCol.NEW(180,0,255)
-	if (SuperGlobal.Game) and SuperGlobal.Game!="" and SuperGlobal.Game!="nil"
+	if (SuperGlobal.GameData) and SuperGlobal.GameData!="" and SuperGlobal.GameData!="nil"
+		CSay("Retrieving GameData")
+		CSay(SuperGlobal.GameData)
 		Game[".dump"]=SuperGlobal.GameData
 	end
 	if (not SuperGlobal.Map) or SuperGlobal.Map=="" or SuperGlobal.Map=="nil"
+		CSay("Loading level #"..Game.Level)
 		Map.Load(Game.Level)
+		CSay("Done")
 	end 
 	if (SuperGlobal.MapData) and SuperGlobal.MapData!="" and SuperGlobal.MapData!="nil"
+		CSay("Retrieving MapData")
 		Map.Data[".dump"] = SuperGlobal.MapData
 	end
-	assert(load(SuperGlobals.Tiles))()
+	if (SuperGlobal.Tiles) and SuperGlobal.Tiles!="" and SuperGlobal.Tiles!="nil"
+		CSay("Retrieving Tiles")
+		//CSay(SuperGlobal.Tiles)
+		assert(load(SuperGlobal.Tiles))()
+	end
+	CSay("Retrieving Bubbles")
 	for i=0,FieldSize*FieldSize
+		CSayF("Bubble %03d/%03d",i,FieldSize*FieldSize)
 		string tag
 		tag = sprintf("OBJ%d",i)
 		if (SuperGlobal[tag]) and SuperGlobal[tag]!="" and SuperGlobal[tag]!="nil"
+			if not Map.Level[i] then
+				CSay("= Empty! Create!")
+				Map.Level[i] = Map.NEW(0,0) 
+			end
+			CSay("= Define!")
 			Map.Level[i][".dump"] = SuperGlobal[tag]
 		end
 	end
+	CSay("Loading game assets")
 	ImgLevelComplete = LoadImage("GFX/General/LevelComplete.png")
 	ImgBubble        = LoadImage("GFX/Levels/Bubbles/Bubble.png")
 	ImgJokerHat      = LoadImage("GFX/Levels/Xtra/Joker Hat.png")
@@ -802,8 +824,11 @@ global void BUB_Load()
 	FlipHor          = LoadImage("GFX/Game/HFlip.png")
 	FlipVer          = LoadImage("GFX/Game/VFlip.png")
 	AudPop           = LoadAudio("Audio/Game/Pop.wav")
+	CSay("Conguring UI buttons")
 	UIButton.Init()
+	CSay("Configuring random tunes")
 	GetRandomTunes()
+	CSay("Loading random tune")
 	RandomTune()
 end
 
@@ -859,7 +884,7 @@ global void BUB_Draw()
 			Rect(TubeFillX, (TubeY + TubeH) - n,TubeW,n)
 		end
 		SetColor(255,255,255)
-		ImgTube.Draw(TubeFillX,TubeY)		
+		ImgTube.Draw(TubeFillX,TubeY)
 	end
 	
 	// Mascot
@@ -938,17 +963,3 @@ global void BUB_MousePressed(string button, int x, int y)
 		end
 	end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
