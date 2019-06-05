@@ -34,7 +34,7 @@
 #macro max_weed 100
 #macro sin_weed .0011
 
-bool fishdebug=true
+bool fishdebug=false
 
 
 class TFish

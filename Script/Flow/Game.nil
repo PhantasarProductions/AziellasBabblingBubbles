@@ -24,7 +24,6 @@
 // Version: 19.06.05
 // End License Information
 
-
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
