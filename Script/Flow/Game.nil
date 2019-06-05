@@ -774,8 +774,22 @@ global void BUB_Load()
 	TBubCol.NEW(255,180,0)
 	TBubCol.NEW(255,180,180)
 	TBubCol.NEW(180,0,255)
+	if (SuperGlobal.Game) and SuperGlobal.Game!="" and SuperGlobal.Game!="nil"
+		Game[".dump"]=SuperGlobal.GameData
+	end
 	if (not SuperGlobal.Map) or SuperGlobal.Map=="" or SuperGlobal.Map=="nil"
 		Map.Load(Game.Level)
+	end 
+	if (SuperGlobal.MapData) and SuperGlobal.MapData!="" and SuperGlobal.MapData!="nil"
+		Map.Data[".dump"] = SuperGlobal.MapData
+	end
+	assert(load(SuperGlobals.Tiles))()
+	for i=0,FieldSize*FieldSize
+		string tag
+		tag = sprintf("OBJ%d",i)
+		if (SuperGlobal[tag]) and SuperGlobal[tag]!="" and SuperGlobal[tag]!="nil"
+			Map.Level[i][".dump"] = SuperGlobal[tag]
+		end
 	end
 	ImgLevelComplete = LoadImage("GFX/General/LevelComplete.png")
 	ImgBubble        = LoadImage("GFX/Levels/Bubbles/Bubble.png")
