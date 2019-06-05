@@ -645,8 +645,8 @@ end
 
 // Brings you back to the main menu, in case this doesn't make sense to you ;)
 void MenuMenu()
-	//GoToFlow("MAINMENU")
-	//KillFlow("GAME")
+	GoToFlow("MAINMENU")
+	KillFlow("GAME")
 end
 
 class UIButton
