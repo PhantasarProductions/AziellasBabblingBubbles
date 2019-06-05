@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.06.01
+// Version: 19.06.05
 // End License Information
+
 
 
 
@@ -208,6 +209,7 @@ global void BUB_MousePressed(string button)
 		MenuItem.chosen.action()
 	end
 end
+
 
 
 
