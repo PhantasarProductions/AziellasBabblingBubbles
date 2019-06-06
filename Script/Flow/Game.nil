@@ -207,6 +207,7 @@ class Map
 		var data
 		var level
 		var tiles
+		BubCol = shuffletable(BubCol)
 		file = Trim(sprintf("Data/Levels/%03d",levelnumber))
 		CSayF("Checking: \"%s\"",file)
 		assert(JCR_EntryExists(file),sprintf("Level #%d does not appear to exist!",levelnumber))
@@ -477,6 +478,7 @@ class Map
 		q[1]=1
 		q[2]=-1
 		void minipop(int x, int y, int color)
+			CSayF("Minipop (%03d,%03d) >> %d",x,y,color)
 			var a
 			a = Map.Level[Map.C2Real(x,y)]
 			if not a then return end
@@ -486,8 +488,8 @@ class Map
 			end
 			a.popping=true
 			for i in each(q)
-				if x+i>=1 and x+i<=FieldSize then a = Map.Level[Map.C2Real(x+i,y)];  if (a.bubble and (not a.popping) and a.bubcol==color) or a.nonbubble:upper()=="JOKER" then minipop(x+i,y,color) end end
-				if y+i>=1 and y+i<=FieldSize then a = Map.Level[Map.C2Real(x,y+i)];  if (a.bubble and (not a.popping) and a.bubcol==color) or a.nonbubble:upper()=="JOKER" then minipop(x,y+i,color) end end
+				if x+i>=1 and x+i<=FieldSize then a = Map.Level[Map.C2Real(x+i,y)];  if ((a.bubble and a.bubcol==color) or a.nonbubble:upper()=="JOKER") and (not a.popping) then minipop(x+i,y,color) end end
+				if y+i>=1 and y+i<=FieldSize then a = Map.Level[Map.C2Real(x,y+i)];  if ((a.bubble and a.bubcol==color) or a.nonbubble:upper()=="JOKER") and (not a.popping) then minipop(x,y+i,color) end end
 			end
 			popped = popped + 1
 		end
@@ -812,6 +814,8 @@ global void BUB_Load()
 			Map.Level[i][".dump"] = SuperGlobal[tag]
 		end
 	end
+	CSay("Shuffling colors")
+	BubCol = shuffletable(BubCol)
 	CSay("Loading game assets")
 	ImgLevelComplete = LoadImage("GFX/General/LevelComplete.png")
 	ImgBubble        = LoadImage("GFX/Levels/Bubbles/Bubble.png")
