@@ -521,6 +521,7 @@ class TGame
 	int Score = 0
 	int Level = 1
 	int _OldScore
+	int _Best = 0
 	
 	void CONSTRUCTOR()
 		self._OldScore=-1 // Needed as NIL is still a bit premature.
@@ -539,6 +540,13 @@ class TGame
 	
 	set int OldScore
 		self._OldScore=value
+	end
+	
+	get int BestScore
+		if self.Score>self._Best
+			self._Best = self.Score
+		end
+		return self._Best
 	end
 
 	get int TileCount
@@ -627,15 +635,21 @@ class TScoreShow
 		SetColor(255,255,255)
 		if self.Show>=self.Actual
 			self.Show=self.Actual
-		else
+		elseif self.Show!=self.Actual
+			bool increased
 			verschil = self.Actual-self.Show
 			if verschil<10
 				self.Show = self.Show + 1
+				increased=true
 			end
 			for i in each(self.nums)
 				if verschil>i
-					self.Show=self.Show+math.random(0,i-5)
+					self.Show=self.Show+math.random(1,i-5)
+					increased=true
 				end
+			end
+			if not increased
+				self.Show = self.Show + 1
 			end
 		end
 		if (not self.Text) or self.Old!=self.Show
@@ -724,10 +738,12 @@ end
 
 var SScore
 var SLvScr
+var SBestS
 var SLevel
 var STiles
 SScore = TScoreShow.NEW("Total Score","Score")
 SLvScr = TScoreShow.NEW("Level Score","LevelScore")
+SBestS = TScoreShow.NEW("Your Personal Top Score","BestScore")
 SLevel = TScoreShow.NEW("Level","Level")
 STiles = TScoreShow.NEW("Tiles left","TileCount")
 
@@ -880,6 +896,7 @@ global void BUB_Draw()
 	SLvScr.Draw(75)
 	SLevel.Draw(145)
 	STiles.Draw(215)
+	SBestS.Draw(355)
 	
 	// Draw level
 	Map.DrawAll()
