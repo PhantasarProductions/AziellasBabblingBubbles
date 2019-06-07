@@ -489,8 +489,8 @@ class Map
 			end
 			a.popping=true
 			for i in each(q)
-				if x+i>=1 and x+i<=FieldSize then a = Map.Level[Map.C2Real(x+i,y)];  if ((a.bubble and a.bubcol==color) or a.nonbubble:upper()=="JOKER") and (not a.popping) then minipop(x+i,y,color) end end
-				if y+i>=1 and y+i<=FieldSize then a = Map.Level[Map.C2Real(x,y+i)];  if ((a.bubble and a.bubcol==color) or a.nonbubble:upper()=="JOKER") and (not a.popping) then minipop(x,y+i,color) end end
+				if x+i>=1 and x+i<=FieldSize then a = Map.Level[Map.C2Real(x+i,y)];  if a and ((a.bubble and a.bubcol==color) or a.nonbubble:upper()=="JOKER") and (not a.popping) then minipop(x+i,y,color) end end
+				if y+i>=1 and y+i<=FieldSize then a = Map.Level[Map.C2Real(x,y+i)];  if a and ((a.bubble and a.bubcol==color) or a.nonbubble:upper()=="JOKER") and (not a.popping) then minipop(x,y+i,color) end end
 			end
 			popped = popped + 1
 		end
