@@ -1,7 +1,7 @@
 [rem]
 Generated file!
 
-Generated: 5/31/2019 10:16:32 PM
+Generated: 6/7/2019 8:33:14 PM
 
 [vars]
 AUTHOR[./SRC/ALLEN R. WALDEN]=Allen R. Walden
@@ -13,6 +13,7 @@ AUTHOR[./SRC/GR-SITES]=GR-Sites
 AUTHOR[./SRC/KELLY]=Kelly
 AUTHOR[./SRC/LAUREN THOMPSON]=Lauren Tompson
 AUTHOR[./SRC/LINVALA KEMELLON]=Linvala Kemellon
+AUTHOR[./SRC/MAN OF STEEL]=Man Of Steel
 AUTHOR[./SRC/OCAL]=Unknown
 AUTHOR[./SRC/ODRAREG PEPPER]=Odrareg Pepper
 AUTHOR[./SRC/TRICKY ASSETS]=Jeroen P. Broks
@@ -36,6 +37,7 @@ NOTES[./SRC/GR-SITES]=www.grsites.com
 NOTES[./SRC/KELLY]=Public Domain
 NOTES[./SRC/LAUREN THOMPSON]=DaFont 100% Free
 NOTES[./SRC/LINVALA KEMELLON]=This picture was created by order of Jeroen P. Broks and is therefore not allowed to be extracted from this game!
+NOTES[./SRC/MAN OF STEEL]=Ths artwork is made by Man of Steel by request of Jeroen P. Broks and is property of Jeroen P. Broks, and may only be used with prior written permission of the owner.
 NOTES[./SRC/OCAL]=Public Domain
 NOTES[./SRC/ODRAREG PEPPER]=Public Domain
 NOTES[./SRC/TRICKY ASSETS]=Creative Commons by Attribution, Non Commercial, Share-Alike
@@ -68,6 +70,7 @@ Scyndi:Projects/Applications/Bubble/Games/Aziella's Babbling Bubbles/Music/Aziel
 ./src/fantasystock
 ./src/GR-Sites
 ./src/CCBYNCSA - Alexander
+./src/Man Of Steel
 
 [List:IGNOREDIRS]
 
