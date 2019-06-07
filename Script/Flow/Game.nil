@@ -531,9 +531,7 @@ class TGame
 	//private table mtools
 	
 	get int OldScore
-		if self.Level==1
-			self._OldScore=0
-		elseif self._OldScore<0
+		if self._OldScore<0
 			self._OldScore=self.Score
 		end	
 		return self._OldScore
@@ -551,6 +549,10 @@ class TGame
 			end
 		end
 		return ret
+	end
+	
+	get int LevelScore
+		return self.Score-self.OldScore
 	end
 
 	
@@ -721,9 +723,11 @@ class UIButton
 end
 
 var SScore
+var SLvScr
 var SLevel
 var STiles
-SScore = TScoreShow.NEW("Score","Score")
+SScore = TScoreShow.NEW("Total Score","Score")
+SLvScr = TScoreShow.NEW("Level Score","LevelScore")
 SLevel = TScoreShow.NEW("Level","Level")
 STiles = TScoreShow.NEW("Tiles left","TileCount")
 
@@ -802,6 +806,8 @@ global void BUB_Load()
 	TBubCol.NEW(255,180,0)
 	TBubCol.NEW(255,180,180)
 	TBubCol.NEW(180,0,255)
+	TBubCol.NEW(180,180,255)
+	TBubCol.NEW(180,255,180)
 	if (SuperGlobal.GameData) and SuperGlobal.GameData!="" and SuperGlobal.GameData!="nil"
 		CSay("Retrieving GameData")
 		CSay(SuperGlobal.GameData)
@@ -871,8 +877,9 @@ global void BUB_Draw()
 	
 	// Score screen
 	SScore.Draw(5)
-	SLevel.Draw(75)
-	STiles.Draw(145)
+	SLvScr.Draw(75)
+	SLevel.Draw(145)
+	STiles.Draw(215)
 	
 	// Draw level
 	Map.DrawAll()
