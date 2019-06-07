@@ -68,6 +68,7 @@ var AudPop
 var ImgBubble
 var ImgTube
 var ImgLevelComplete
+var ImgTimesUp
 var ImgJokerHat
 var ImgCherry
 var ImgTile
@@ -206,7 +207,7 @@ class Map
 		var lines
 		var data
 		var level
-		var tiles
+		var tiles		
 		BubCol = shuffletable(BubCol)
 		file = Trim(sprintf("Data/Levels/%03d",levelnumber))
 		CSayF("Checking: \"%s\"",file)
@@ -519,9 +520,28 @@ end
 class TGame
 	int Score = 0
 	int Level = 1
+	int _OldScore
+	
+	void CONSTRUCTOR()
+		self._OldScore=-1 // Needed as NIL is still a bit premature.
+	end
+	
 	//readonly table tools
 	//private table ttools
 	//private table mtools
+	
+	get int OldScore
+		if self.Level==1
+			self._OldScore=0
+		elseif self._OldScore<0
+			self._OldScore=self.Score
+		end	
+		return self._OldScore
+	end
+	
+	set int OldScore
+		self._OldScore=value
+	end
 
 	get int TileCount
 		int ret
@@ -728,6 +748,7 @@ end
 
 
 // Level completion checks
+var OutOfTimeCD
 var CompletionCD
 var LevelCompletionFunctions
 LevelCompletionFunctions = TLinkedList.NEW()
@@ -818,6 +839,7 @@ global void BUB_Load()
 	BubCol = shuffletable(BubCol)
 	CSay("Loading game assets")
 	ImgLevelComplete = LoadImage("GFX/General/LevelComplete.png")
+	ImgTimesUp       = LoadImage("GFX/General/TimesUp.png")
 	ImgBubble        = LoadImage("GFX/Levels/Bubbles/Bubble.png")
 	ImgJokerHat      = LoadImage("GFX/Levels/Xtra/Joker Hat.png")
 	ImgCherry        = LoadImage("GFX/Levels/Xtra/Cherry.png")
@@ -902,6 +924,12 @@ global void BUB_Draw()
 		CompletionCD = CompletionCD - 1
 	end
 	
+	// Time's up
+	if OutOfTimeCD
+		ImgTimesUp.Draw((Screen.Width/2)-(ImgLevelComplete.Width/2),(Screen.Height/2)-(ImgTimesUp.Height/2))
+		OutOfTimeCD = OutOfTimeCD - 1
+	end
+	
 	// Mouse
 	ShowMouse()
 	
@@ -915,6 +943,7 @@ global void BUB_Update()
 		if CompletionCD<=0
 			Game.Level = Game.Level + 1
 			Map.Load(Game.Level)
+			Game.OldScore = Game.Score
 			if Game.Level%5==1
 				RandomTune()
 			end
@@ -937,7 +966,15 @@ global void BUB_Update()
 			oldtime=ctime
 		end
 	end
-	
+	if OutOfTimeCD and OutOfTimeCD<=0
+		CSay("Time was up, reloading level")
+		Map.Load(Game.Level)
+		OutOfTimeCD = nil // And reset as this is no longer an issue!
+		Game.Score = Game.OldScore
+	end
+	if Map.Data.Time<=0
+		OutOfTimeCD=OutOfTimeCD or 500
+	end
 end
 
 global void BUB_KeyPressed(string name,int code)
@@ -951,7 +988,7 @@ global void BUB_MousePressed(string button, int x, int y)
 	if button!="Left" then return end
 	if intutor
 		// Comes later!
-	elseif CompletionCD
+	elseif CompletionCD or OutOfTimeCD
 		return
 	elseif UIButton.Hover
 		UpdateData()
@@ -961,7 +998,7 @@ global void BUB_MousePressed(string button, int x, int y)
 		elseif y>yRot  and y<yRot+RotClock.Height      and x>xRotCW  and x<xRotCW+RotClock.Width       then Map.RotateR()
 		elseif y>yRot  and y<yRot+RotCountClock.Height and x>xRotCCW and x<xRotCCW+RotCountClock.Width then Map.RotateL() 
 		elseif y>yFlip and y<yFlip+FlipHor.Height      and x>xFlipH  and x<xFlipH+FlipHor.Width        then Map.FlipH() 
-		elseif y>yFlip and y<yFlip+FlipVer.Height      and x>xFlipV  and x<xFlipV+FlipVer.Width        then Map.FlipV()   end
+		elseif y>yFlip and y<yFlip+FlipVer.Height      and x>xFlipV  and x<xFlipV+FlipVer.Width        then Map.FlipV() end
 		if LevelComplete()
 			CompletionCD = 625
 		end
