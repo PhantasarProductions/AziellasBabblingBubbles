@@ -36,6 +36,8 @@
 #use 'Script/Use/Users'
 #use 'Script/Use/Config' 
 
+#macro GirlFileName Aziella
+
 #macro TileSize 32
 #macro FieldSize 14
 #macro FieldX 40
@@ -73,6 +75,8 @@ var ImgTimesUp
 var ImgJokerHat
 var ImgCherry
 var ImgTile
+var ImgGirl
+var ImgHut
 var RotClock
 var RotCountClock
 var FlipHor
@@ -284,6 +288,16 @@ class Map
 										mp.nonbubble="Joker"
 										mp.x = math.random(0,Screen.Width)
 										mp.y = math.random(0,Screen.Height)
+									case "A"
+										mp=level[tp]
+										mp.bubble=false
+										mp.nonbubble="Girl"
+										mp.y = Screen.Height+128
+									case "H"
+										mp=level[tp]
+										mp.bubble=false
+										mp.nonbubble="Hut"
+										mp.y = Screen.Height+128
 									case "R" "C"
 										mp=level[tp]
 										mp.bubble=true
@@ -332,6 +346,33 @@ class Map
 		Map.Level[Map.C2Real(x,y)]=obj
 	end
 
+	static bool CheckGirlHome(obj ,int gx, int gy,int hx,int hy)
+		var h
+		bool goed
+		repeat
+			if gx<1 or gx>FieldSize or hx<1 or hy>FieldSize or (not obj)
+				return false
+			end
+			h = Map.Level[Map.C2Real(hx,hy)]
+			if h
+				goed = true
+			else
+				if hx<gx then hx=hx-1 end
+				if hx>gx then hx=hx+1 end
+				if hy<gy then hy=hy-1 end
+				if hy>gy then hy=hy+1 end
+				goed = false
+			end
+		until goed 
+		//h = Map.Level[Map.C2Real(hx,hy)]
+		if h.nonbubble:upper()=="HUT" and obj.nonbubble:upper()=="GIRL"
+			Map.Level[Map.C2Real(hx,hy)]=nil;
+			Map.Level[Map.C2Real(gx,gy)]=nil;
+			return true
+		end
+		return false
+	end
+
 	static void DrawReal(int idx)
 		var obj
 		obj = Map.Level[idx]
@@ -344,6 +385,10 @@ class Map
 			switch obj.nonbubble:upper()
 				case "JOKER"
 					ImgJokerHat.Draw(obj.x,obj.y)
+				case "GIRL"
+					ImgGirl.Draw(obj.x,obj.y-32)
+				case "HUT"
+					ImgHut.Draw(obj.x,obj.y)
 				default
 					error(sprintf("I don't know non-bubble type: %s!",obj.nonbubble))
 			end
@@ -780,13 +825,32 @@ do
 	bool AllTilesBroken()
 		return Game.TileCount<=0
 	end
-	bool GirlHome()
-		return true // The true code comes later!
+	bool GirlIsHome()
+		bool GirlFound
+		bool GirlHome
+		for y=1,FieldSize
+			for x=1,FieldSize
+				var o
+				o = Map.Level[Map.C2Real(x,y)]
+				if o and o.nonbubble=="Girl"
+					// assert(not GirlFound,"Dupe Girl!")
+					GirlFound=true
+					GirlHome = GirlHome or Map.CheckGirlHome(o,x,y,x-1,y)
+					GirlHome = GirlHome or Map.CheckGirlHome(o,x,y,x+1,y)
+					GirlHome = GirlHome or Map.CheckGirlHome(o,x,y,x,y-1)
+					GirlHome = GirlHome or Map.CheckGirlHome(o,x,y,x,y+1)
+				end
+				if GirlHome 
+					return true
+				end
+			end
+		end
+		return (not GirlFound)
 	end
 	
 	LevelCompletionFunctions.AddLast(CheckFilledUp)
 	LevelCompletionFunctions.AddLast(AllTilesBroken)
-	LevelCompletionFunctions.AddLast(GirlHome)
+	LevelCompletionFunctions.AddLast(GirlIsHome)
 end
 
 bool LevelComplete()
@@ -866,6 +930,8 @@ global void BUB_Load()
 	ImgBubble        = LoadImage("GFX/Levels/Bubbles/Bubble.png")
 	ImgJokerHat      = LoadImage("GFX/Levels/Xtra/Joker Hat.png")
 	ImgCherry        = LoadImage("GFX/Levels/Xtra/Cherry.png")
+	ImgGirl          = LoadImage("GFX/Levels/Xtra/GirlFileName.png")
+	ImgHut           = LoadImage("GFX/Levels/Xtra/Hut.png")
 	ImgTile          = LoadImage("GFX/Levels/Tiles/Tile.png")
 	ImgTube          = LoadImage("GFX/Game/Tube.png")
 	RotClock         = LoadImage("GFX/Game/RotateClockwise.png")
@@ -924,7 +990,7 @@ global void BUB_Draw()
 	end
 	SetColor(255,255,255)
 	ImgTube.Draw(TubeTimeX,TubeY)
-	if Map.Data.FillReq>0 		
+	if Map.Data.FillReq>0
 		if Map.Data.Filled>Map.Data.FillReq 
 			Map.Data.Filled=Map.Data.FillReq
 		end
