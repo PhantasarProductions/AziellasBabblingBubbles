@@ -69,6 +69,7 @@ int oldtime
 table musiclist
 bool intutor
 var AudPop
+var AudExplosion
 var ImgBubble
 var ImgBomb
 var ImgTube
@@ -942,6 +943,7 @@ global void BUB_Load()
 	FlipHor          = LoadImage("GFX/Game/HFlip.png")
 	FlipVer          = LoadImage("GFX/Game/VFlip.png")
 	AudPop           = LoadAudio("Audio/Game/Pop.wav")
+	AudExplosion     = LoadAudio("Audio/Game/Explosion.wav")
 	CSay("Conguring UI buttons")
 	UIButton.Init()
 	CSay("Configuring random tunes")
