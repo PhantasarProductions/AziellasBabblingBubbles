@@ -301,13 +301,15 @@ class Map
 										mp.bubble=false
 										mp.nonbubble="Hut"
 										mp.y = Screen.Height+128
-									case "R" "C"
+									case "R" "C" "*"
 										mp=level[tp]
 										mp.bubble=true
 										mp.bubcol=math.random(1,Map.Data.MaxColor)
 										switch ch
 											case "C"
 												mp.plusbubble="Cherry"
+											case "*"
+												mp.plusbubble="Bomb"
 										end
 									default
 										error("Unknown level tag >> "..ch)
@@ -401,6 +403,8 @@ class Map
 			switch obj.plusbubble:upper()
 				case "CHERRY"
 					ImgCherry.Draw(obj.x,obj.y)
+				case "BOMB"
+					ImgBomb.Draw(obj.x,obj.y)
 				default
 					error(sprintf("I don't know plus-bubble type: %s!",obj.plusbubble))
 			end
