@@ -25,6 +25,7 @@
 // End License Information
 
 
+
 #use 'libs/strings'
 #use 'libs/linkedlist'
 #use 'libs/tables'
@@ -69,6 +70,7 @@ table musiclist
 bool intutor
 var AudPop
 var ImgBubble
+var ImgBomb
 var ImgTube
 var ImgLevelComplete
 var ImgTimesUp
@@ -932,6 +934,7 @@ global void BUB_Load()
 	ImgCherry        = LoadImage("GFX/Levels/Xtra/Cherry.png")
 	ImgGirl          = LoadImage("GFX/Levels/Xtra/GirlFileName.png")
 	ImgHut           = LoadImage("GFX/Levels/Xtra/Hut.png")
+	ImgBomb          = LoadImage("GFX/Levels/Xtra/Bomb.png")
 	ImgTile          = LoadImage("GFX/Levels/Tiles/Tile.png")
 	ImgTube          = LoadImage("GFX/Game/Tube.png")
 	RotClock         = LoadImage("GFX/Game/RotateClockwise.png")
@@ -1095,5 +1098,6 @@ global void BUB_MousePressed(string button, int x, int y)
 		end
 	end
 end
+
 
 

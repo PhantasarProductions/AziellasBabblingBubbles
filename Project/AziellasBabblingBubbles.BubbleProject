@@ -1,7 +1,7 @@
 [rem]
 Generated file!
 
-Generated: 6/7/2019 8:33:14 PM
+Generated: 6/8/2019 9:12:23 PM
 
 [vars]
 AUTHOR[./SRC/ALLEN R. WALDEN]=Allen R. Walden
@@ -19,6 +19,7 @@ AUTHOR[./SRC/ODRAREG PEPPER]=Odrareg Pepper
 AUTHOR[./SRC/TRICKY ASSETS]=Jeroen P. Broks
 AUTHOR[./SRC/TRICKY]=Jeroen P. Broks
 AUTHOR[./SRC/TRICKYPRIVATE]=Jeroen P. Broks
+AUTHOR[./SRC/UNKNOWN]=Unknown
 AUTHOR[./SRC/WILLIAM BOYD]=William Boyd
 AUTHOR=Jeroen P. Broks
 BUBBLEID=d75770de7a6527877030ecd088310f34
@@ -43,6 +44,7 @@ NOTES[./SRC/ODRAREG PEPPER]=Public Domain
 NOTES[./SRC/TRICKY ASSETS]=Creative Commons by Attribution, Non Commercial, Share-Alike
 NOTES[./SRC/TRICKY]=Scripts and config files are GPL3, graphics and audio are CC-BY-NC-SA license
 NOTES[./SRC/TRICKYPRIVATE]=This file contains references to the Phantasar universe and may NOT be extracted from this game without prior written permission from Jeroen P. Broks himself!
+NOTES[./SRC/UNKNOWN]=Due to some technical issues the credits of this file got lost. If I can recover those, I'll put them in.
 NOTES[./SRC/WILLIAM BOYD]=DaFont 100% Free
 OUTFOLDER=Scyndi:Releases/AziellaBabblingBubbles
 PROJECTLICENSE=Aziella is property of J.P. Broks. Game scripts to make the game work are GPL3, scripts in /libs folder have their own license
@@ -71,6 +73,7 @@ Scyndi:Projects/Applications/Bubble/Games/Aziella's Babbling Bubbles/Music/Aziel
 ./src/GR-Sites
 ./src/CCBYNCSA - Alexander
 ./src/Man Of Steel
+./src/Unknown
 
 [List:IGNOREDIRS]
 
