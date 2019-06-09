@@ -1,12 +1,13 @@
 [rem]
 Generated file!
 
-Generated: 6/8/2019 9:12:23 PM
+Generated: 6/9/2019 1:04:23 PM
 
 [vars]
 AUTHOR[./SRC/ALLEN R. WALDEN]=Allen R. Walden
 AUTHOR[./SRC/ANGIE DURBIN]=Angie Durbin
 AUTHOR[./SRC/CCBYNCSA - ALEXANDER]=Alexander
+AUTHOR[./SRC/EXPLOSION GENERATOR]=Explosion Generator
 AUTHOR[./SRC/FANTASYSTOCK]=fantasystock
 AUTHOR[./SRC/FLAMINGTEXT.COM]=Jeroen P. Broks
 AUTHOR[./SRC/GR-SITES]=GR-Sites
@@ -32,6 +33,7 @@ JCRMERGE=YES
 NOTES[./SRC/ALLEN R. WALDEN]=Downloaded from DaFont said to be 100% free
 NOTES[./SRC/ANGIE DURBIN]=Donwloaded from DaFont and said to be 100% free
 NOTES[./SRC/CCBYNCSA - ALEXANDER]=Creative Commons - By Attribution - NonCommercial - ShareAlike -- http://www.orangefreesounds.com/pop-sound-effect/
+NOTES[./SRC/EXPLOSION GENERATOR]=Generated with the Explosion Generator by Positech Games -- http://www.positech.co.uk/content/explosion/explosiongenerator.html
 NOTES[./SRC/FANTASYSTOCK]=Please read the terms of usage before extracting and using! >> https://fantasystock.deviantart.com/journal/7569297/
 NOTES[./SRC/FLAMINGTEXT.COM]=Created with CoolText
 NOTES[./SRC/GR-SITES]=www.grsites.com
@@ -74,6 +76,7 @@ Scyndi:Projects/Applications/Bubble/Games/Aziella's Babbling Bubbles/Music/Aziel
 ./src/CCBYNCSA - Alexander
 ./src/Man Of Steel
 ./src/Unknown
+./src/Explosion Generator
 
 [List:IGNOREDIRS]
 

@@ -21,8 +21,9 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.06.07
+// Version: 19.06.09
 // End License Information
+
 
 
 
@@ -120,6 +121,68 @@ class TBubCol
 		self.G=aG
 		self.B=aB
 		BubCol[#BubCol+1]=self
+	end
+end
+
+class Explosion
+	static var List
+	static table Img
+	
+	readonly int x
+	readonly int y
+	int Frame
+	int fstime
+	readonly int fsreset
+	
+	void CONSTRUCTOR(int x, int y, int speed)
+		self.x = x
+		self.y = y
+		self.fsreset = speed
+		self.fstime = speed
+		Explosion.List = Explosion.List or TLinkedList.NEW()
+		Explosion.List.AddLast(self)
+	end
+	
+	void DESTRUCTOR()
+		CSayF("Explosion at (%d,%d) has been wiped from the memory!",self.x,self.y)
+	end
+	
+	static var Start(int x, int y, int speed)
+		CSayF("Start explosion on (%d,%d), speed %d",x,y,speed)
+		return Explosion.NEW(x-48,y-48,speed)
+	end
+		
+	void Draw()
+		string file
+		self.fstime = self.fstime - 1
+		if self.fstime<=0
+			self.fstime = self.fsreset
+			if self.Frame<16 
+				self.Frame=self.Frame+1 
+			end
+		end
+		if self.Frame>15 
+			return 
+		end
+		file = sprintf("GFX/Explosion/%08X.png",self.Frame)
+		if not Explosion.Img[self.Frame] 
+			CSayF("%02d:%x> Going to load \"%s\"!",self.Frame,self.Frame,file)
+			Explosion.Img[self.Frame] = LoadImage(file)
+		end
+		Explosion.Img[self.Frame]['Draw'](self.x,self.y)
+	end
+	
+	static void DrawAll()
+		SetColor(255,255,255)
+		if not Explosion.List
+			return 
+		end
+		for E,LNK in Explosion.List.Each
+			E.Draw()
+			if E.Frame>15
+				LNK.UnLink()
+			end
+		end
 	end
 end
 
@@ -540,10 +603,11 @@ class Map
 				hor = math.abs(x-ix)
 				ver = math.abs(y-iy)
 				hypotenusa = math.sqrt( (hor*hor) + (ver*ver) ) // Thank you Pythagoras
-				if hypotenusa<=5 and (ix>=1) and (ix<=FieldSize) and (iy>=1) and (iy<=FieldSize) and (not (ix==x and iy==y))
+				if hypotenusa<=4 and (ix>=1) and (ix<=FieldSize) and (iy>=1) and (iy<=FieldSize) and (not (ix==x and iy==y))
 					var a
 					a = Map.Level[Map.C2Real(ix,iy)]
 					CSayF("= Explosion kill on (%d,%d)",ix,iy)
+					Explosion.Start( (ix*32)+FieldX, (iy*32)+FieldY, math.random(1,3) )
 					if a and (not a.kill)
 						a.kill=true
 						if a.plusbubble:upper()=="BOMB" 
@@ -570,7 +634,7 @@ class Map
 			if not a then return end
 			switch a.plusbubble:upper()
 				case "CHERRY"
-					Game.Score = Game.Score + math.rand(1000,5000)
+					Game.Score = Game.Score + math.random(1000,5000)
 				case "BOMB"
 					Map.Kaboom(x,y)
 			end
@@ -1011,6 +1075,9 @@ global void BUB_Draw()
 	// Draw level
 	Map.DrawAll()
 	
+	// Explosions
+	Explosion.DrawAll()
+	
 	// Rotation buttons
 	Color(255,255,255)
 	RotClock.Draw(xRotCW,yRot)
@@ -1138,6 +1205,7 @@ global void BUB_MousePressed(string button, int x, int y)
 		end
 	end
 end
+
 
 
 
