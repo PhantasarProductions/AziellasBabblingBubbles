@@ -130,6 +130,7 @@ class _MapData
 	int FillReq
 	int Joker
 	int Cherry
+	int Bomb
 	
 	int Filled = 0
 	int Time
@@ -146,6 +147,7 @@ class Map
 	int x
 	int y
 	bool popping
+	bool kill
 	string nonbubble
 	string plusbubble
 	
@@ -339,6 +341,9 @@ class Map
 		if Map.Data.Cherry>0 and math.random(1,Map.Data.Cherry)==1 and obj.plusbubble==""
 			obj.plusbubble="Cherry"
 		end
+		if Map.Data.Bomb>0 and math.random(1,Map.Data.Bomb)==1 and obj.plusbubble==""
+			obj.plusbubble="Bomb"
+		end
 		obj.bubble=true
 		obj.bubcol=math.random(1,Map.Data.MaxColor)
 		for iy=1,FieldSize
@@ -525,6 +530,33 @@ class Map
 		Map.Level = tempfield
 	end 
 	
+	static void Kaboom(int x,int y)
+		CSayF("Request to blow up from spot (%d,%d)",x,y)
+		for iy=y-5,y+5 
+			for ix=x-5,x+5 
+				int hor
+				int ver
+				int hypotenusa
+				hor = math.abs(x-ix)
+				ver = math.abs(y-iy)
+				hypotenusa = math.sqrt( (hor*hor) + (ver*ver) ) // Thank you Pythagoras
+				if hypotenusa<=5 and (ix>=1) and (ix<=FieldSize) and (iy>=1) and (iy<=FieldSize) and (not (ix==x and iy==y))
+					var a
+					a = Map.Level[Map.C2Real(ix,iy)]
+					CSayF("= Explosion kill on (%d,%d)",ix,iy)
+					if a and (not a.kill)
+						a.kill=true
+						if a.plusbubble:upper()=="BOMB" 
+							Map.Kaboom(ix,iy)
+						end
+					end
+				end
+			end
+		end
+		AudExplosion.Play()
+		CSayF("Request to blow up from spot (%d,%d) completed",x,y)
+	end
+	
 	static void Pop(int x, int y)
 		var obj
 		int popped
@@ -536,9 +568,11 @@ class Map
 			var a
 			a = Map.Level[Map.C2Real(x,y)]
 			if not a then return end
-			switch a.plusbubble
+			switch a.plusbubble:upper()
 				case "CHERRY"
 					Game.Score = Game.Score + math.rand(1000,5000)
+				case "BOMB"
+					Map.Kaboom(x,y)
 			end
 			a.popping=true
 			for i in each(q)
@@ -553,7 +587,7 @@ class Map
 		for i=1,FieldSize*FieldSize do
 			var obj
 			obj=Map.Level[i]
-			if obj and obj.popping then
+			if obj and (obj.popping or obj.kill) then
 				Map.Level[i]=nil // Popped!
 				if Map.Tiles[i] and Map.Tiles[i]>0 
 					Map.Tiles[i] = Map.Tiles[i] - 1
