@@ -399,21 +399,21 @@ class Map
 			obj.y=math.random(-8000,8000)
 			obj.bubble=false
 			obj.nonbubble="Joker"
-			return
-		end
-		if Map.Data.Cherry>0 and math.random(1,Map.Data.Cherry)==1 and obj.plusbubble==""
-			obj.plusbubble="Cherry"
-		end
-		if Map.Data.Bomb>0 and math.random(1,Map.Data.Bomb)==1 and obj.plusbubble==""
-			obj.plusbubble="Bomb"
-		end
-		obj.bubble=true
-		obj.bubcol=math.random(1,Map.Data.MaxColor)
-		for iy=1,FieldSize
-			var testobj
-			testobj = Map.Level[Map.C2Real(x,iy)]
-			if testobj and iy!=y and obj.y>=testobj.y
-				obj.y=testobj.y-64
+		else
+			if Map.Data.Cherry>0 and math.random(1,Map.Data.Cherry)==1 and obj.plusbubble==""
+				obj.plusbubble="Cherry"
+			end
+			if Map.Data.Bomb>0 and math.random(1,Map.Data.Bomb)==1 and obj.plusbubble==""
+				obj.plusbubble="Bomb"
+			end
+			obj.bubble=true
+			obj.bubcol=math.random(1,Map.Data.MaxColor)
+			for iy=1,FieldSize
+				var testobj
+				testobj = Map.Level[Map.C2Real(x,iy)]
+				if testobj and iy!=y and obj.y>=testobj.y
+					obj.y=testobj.y-64
+				end
 			end
 		end
 		Map.Level[Map.C2Real(x,y)]=obj
